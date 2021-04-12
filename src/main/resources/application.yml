@@ -1,0 +1,50 @@
+server:
+  tomcat:
+    max-connections: 200
+  port: 8081
+
+spring:
+  thymeleaf:
+    cache: false
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
+  datasource:
+    name: testdb
+    url: jdbc:mysql://localhost:3306/ebookshop?useUnicode=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8&autoReconnect=true&useSSL=false&allowMultiQueries=true
+    username: test
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+# Alibaba Druid connector pool
+    druid:
+      initial-size: 10
+      max-active: 50
+      min-idle: 10
+      max-wait: 60000
+      query-timeout: 10
+      pool-prepared-statements: true
+      max-open-prepared-statements: 20
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true
+      asyncInit: true
+      filters: stat,wall # WebStatFilter
+      web-stat-filter.enabled: true
+      web-stat-filter.url-pattern: /*
+      web-stat-filter.exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
+      web-stat-filter.session-stat-enable: true
+      web-stat-filter.profile-enable: true # StatViewServlet druid
+      stat-view-servlet:
+        enabled: true
+        login-username: admin
+        login-password: 123
+        reset-enable: false
+        allow:
+        deny:
