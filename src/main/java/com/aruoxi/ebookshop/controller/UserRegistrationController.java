@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("/registration")
+@RequestMapping(value = {"/registration","register", "/signup"})
 public class UserRegistrationController {
 
     @Resource
