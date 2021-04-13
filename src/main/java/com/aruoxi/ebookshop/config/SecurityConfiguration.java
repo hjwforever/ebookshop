@@ -29,6 +29,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/css/**",
                 "/img/**",
                 "/webjars/**",
+                "/druid/**",
                 "/swagger-ui/**").permitAll()
             .antMatchers("/","/index","/home").permitAll()
             .anyRequest().authenticated()
