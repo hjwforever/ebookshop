@@ -14,11 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class LoginController {
 
-    @GetMapping(value = {"/","/index"})
-    public String root() {
-        return "home";
-    }
-
     @GetMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

@@ -10,5 +10,21 @@
 </head>
 <body>
   <h1>Home</h1>
+  <p th:text="${session.logs}"></p>
+  <div th:each="memberEntry,memberStat:${books}">
+    <img th:src="${memberEntry.bookCoverImg}"/>
+    <p th:text="${memberEntry.bookName}"></p>
+    <p th:text="${memberEntry.author}"></p>
+<!--    <span>bookUri： </span><a th:href="${memberEntry.bookUri}"></a>-->
+    <br/><span>count：</span><a th:text="${memberStat.count}"></a>
+    <br/><span>size: </span><a th:text="${memberStat.size}"></a>
+    <br/><span>current: </span><a th:text="${memberStat.current}"></a>
+    <br/><span>even: </span><a th:text="${memberStat.even}"></a>
+    <br/><span>odd: </span><a th:text="${memberStat.odd}"></a>
+<!--    <br/><span>first: </span><a th:text="${memberStat.first}"></a>-->
+<!--    <br/><span>last: </span><a th:text="${memberStat.last}"></a>-->
+    <br/><span>index: </span><a th:text="${memberStat.index}"></a>
+
+  </div>
 </body>
 </html>

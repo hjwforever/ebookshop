@@ -22,6 +22,7 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationReady
 
     @Resource
     private BookRepository bookRepository;
+
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseInitializer.class);
 
     private final List<String> emails = Arrays.asList(
@@ -122,6 +123,7 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationReady
 //            LOG.info(savedUser != null ? "创建新用户 " + savedUser : "用户创建失败");
         }
 //        LOG.info("----------添加完毕-------------------");
+
 /**
  * 添加书籍信息
   */
@@ -133,5 +135,4 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationReady
             bookRepository.save(request);
         }
     }
-
 }
