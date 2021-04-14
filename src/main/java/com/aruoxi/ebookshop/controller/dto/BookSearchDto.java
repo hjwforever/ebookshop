@@ -32,4 +32,5 @@ public class BookSearchDto {
     this.beforeYear = beforeYear;
     this.afterYear = afterYear;
   }
+
 }

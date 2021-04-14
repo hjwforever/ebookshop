@@ -1,7 +1,6 @@
 package com.aruoxi.ebookshop.service.impl;
 
 import com.aruoxi.ebookshop.domain.Book;
-import com.aruoxi.ebookshop.domain.QBook;
 import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.BookService;
 import org.slf4j.Logger;
@@ -13,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
