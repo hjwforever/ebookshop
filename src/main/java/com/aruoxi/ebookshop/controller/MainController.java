@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class MainController {
 
-
     @GetMapping(value = {"/","/index"})
     public String root() {
         return "home";
@@ -26,7 +25,7 @@ public class MainController {
         if (!(auth instanceof AnonymousAuthenticationToken)) {
             // todo
             //  return "redirect:/contacts";
-            return "home";
+            return "redirect:home";
         } else return "login";
     }
 
