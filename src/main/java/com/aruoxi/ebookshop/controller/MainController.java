@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class MainController {
 
+
     @GetMapping(value = {"/","/index"})
     public String root() {
         return "home";

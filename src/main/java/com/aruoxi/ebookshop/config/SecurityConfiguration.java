@@ -24,14 +24,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests()
             .antMatchers(
-                "/registration**",
+                "/registration**","register","signup",
                 "/js/**",
                 "/css/**",
                 "/img/**",
                 "/webjars/**",
+                "/webjars/**",
+                "/api/**",
                 "/druid/**",
                 "/swagger-ui/**").permitAll()
             .antMatchers("/","/index","/home").permitAll()
+            .antMatchers("/books/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .formLogin()
