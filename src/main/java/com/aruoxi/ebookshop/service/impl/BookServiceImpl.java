@@ -1,8 +1,11 @@
 package com.aruoxi.ebookshop.service.impl;
 
 import com.aruoxi.ebookshop.domain.Book;
+import com.aruoxi.ebookshop.domain.QBook;
 import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.BookService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +26,8 @@ import java.util.List;
  */
 @Service
 public class BookServiceImpl implements BookService {
+
+    private static final Logger log = LoggerFactory.getLogger(BookServiceImpl.class);
     @Resource
     private BookRepository bookRepository;
 
@@ -48,8 +54,13 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Page<Book> findPage(Integer pageNum, Integer pageSize, String name) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "create_time");
-        Pageable pageRequest = PageRequest.of(pageNum - 1, pageSize, sort);
-        return bookRepository.findByNameLike(name, pageRequest);
+        Pageable pageRequest = PageRequest.of(pageNum - 1, pageSize,
+            Sort.by(QBook.bookId).ascending());
+        if (name != null && !name.equals("")) {
+            return bookRepository.findByNameLike(name, pageRequest);
+        }
+
+        return bookRepository.findAll(pageRequest);
     }
+
 }

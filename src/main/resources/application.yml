@@ -3,6 +3,10 @@ server:
     max-connections: 200
   port: 8081
 
+ebookshop:
+  title: E-Book Shop
+  rows_per_page: 10
+
 spring:
   thymeleaf:
     cache: false

@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "ebookshop.title",
+      "type": "java.lang.String",
+      "description": "Description for ebookshop.title."
+    },
+    {
+      "name": "ebookshop.rows_per_page",
+      "type": "java.lang.String",
+      "description": "Description for ebookshop.rows_per_page."
+    }
+  ] }

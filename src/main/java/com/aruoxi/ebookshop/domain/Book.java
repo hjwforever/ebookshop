@@ -43,6 +43,10 @@ public class Book implements Serializable {
   @Schema(description = "书籍名字", example = "Java从入门到如土", required = true)
   private String bookName;
 
+  @Size(max = 100)
+  @Schema(description = "书籍作者")
+  private String author;
+
   @Size(max = 200)
   @Schema(description = "书籍介绍", example = "这是一本经典之作")
   private String bookIntro;
