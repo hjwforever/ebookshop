@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 @Controller
-public class MainController {
+public class LoginController {
 
     @GetMapping(value = {"/","/index"})
     public String root() {
