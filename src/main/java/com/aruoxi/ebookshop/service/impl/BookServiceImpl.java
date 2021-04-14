@@ -55,7 +55,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public Page<Book> findPage(Integer pageNum, Integer pageSize, String name) {
         Pageable pageRequest = PageRequest.of(pageNum - 1, pageSize,
-            Sort.by("book_id").ascending());
+            Sort.by(Sort.Direction.ASC, QBook.createTime));
         if (name != null && !name.equals("")) {
             return bookRepository.findByNameLike(name, pageRequest);
         }
@@ -63,4 +63,7 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll(pageRequest);
     }
 
+    public Page<Book> findPage(Integer pageNum, Integer pageSize) {
+        return findPage(pageNum, pageSize, "");
+    }
 }

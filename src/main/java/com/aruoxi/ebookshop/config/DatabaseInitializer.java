@@ -1,20 +1,26 @@
 package com.aruoxi.ebookshop.config;
 
 import com.aruoxi.ebookshop.controller.dto.RegistrationDto;
+import com.aruoxi.ebookshop.domain.Book;
 import com.aruoxi.ebookshop.domain.User;
 import com.aruoxi.ebookshop.service.UserService;
+import com.aruoxi.ebookshop.service.impl.BookServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 @Component
 public class DatabaseInitializer implements ApplicationListener<ApplicationReadyEvent> {
+
+    @Resource
+    private BookServiceImpl bookService;
 
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseInitializer.class);
 
@@ -56,6 +62,10 @@ public class DatabaseInitializer implements ApplicationListener<ApplicationReady
 //            LOG.info(savedUser != null ? "创建新用户 " + savedUser : "用户创建失败");
         }
 //        LOG.info("----------添加完毕-------------------");
+
+        Book book = new Book();
+        book.setBookName("12");
+        bookService.save(book);
     }
 
 }

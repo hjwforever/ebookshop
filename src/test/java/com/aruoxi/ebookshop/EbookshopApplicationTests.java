@@ -3,6 +3,7 @@ package com.aruoxi.ebookshop;
 import com.aruoxi.ebookshop.controller.dto.RegistrationDto;
 import com.aruoxi.ebookshop.domain.Book;
 import com.aruoxi.ebookshop.repository.BookRepository;
+import com.aruoxi.ebookshop.service.impl.BookServiceImpl;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -25,6 +26,15 @@ class EbookshopApplicationTests {
 	@Resource
 	private BookRepository bookRepository;
 
+	@Resource
+	private BookServiceImpl bookService;
+
+	@Test
+	void saveBook() {
+		Book book = new Book();
+		book.setBookName("12");
+		bookService.save(book);
+	}
 	/**
 	 * 测试注册及登录
 	 */
