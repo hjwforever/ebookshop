@@ -1,6 +1,7 @@
 package com.aruoxi.ebookshop.controller;
 
 import com.aruoxi.ebookshop.controller.dto.RegistrationDto;
+import com.aruoxi.ebookshop.controller.restController.dto.RestRegistrationDto;
 import com.aruoxi.ebookshop.domain.User;
 import com.aruoxi.ebookshop.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -43,8 +44,12 @@ public class UserRegistrationController {
         if (result.hasErrors()) {
             return "registration";
         }
-
-        userService.save(userDto);
+        RestRegistrationDto registrationDto = new RestRegistrationDto(
+            userDto.getUsername(),
+            userDto.getEmail(),
+            userDto.getPassword(),
+            null);
+        userService.save(registrationDto);
         return "redirect:/registration?success";
     }
 

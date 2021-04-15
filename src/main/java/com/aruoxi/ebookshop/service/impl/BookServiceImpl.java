@@ -1,6 +1,7 @@
 package com.aruoxi.ebookshop.service.impl;
 
 import com.aruoxi.ebookshop.domain.Book;
+import com.aruoxi.ebookshop.domain.QBook;
 import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.BookService;
 import org.slf4j.Logger;

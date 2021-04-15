@@ -22,6 +22,7 @@ public class Role {
     private Long id;
 
     @Schema(description = "角色称呼", required = true)
+    @Column(name = "role_name", unique = true)
     private String name;
 
     @Schema(description = "备注")
@@ -29,8 +30,14 @@ public class Role {
 
     public Role() {
     }
+
     public Role(String name) {
+        this(name, "");
+    }
+
+    public Role(String name, String note) {
         this.name = name;
+        this.note = note;
     }
 
     @Override

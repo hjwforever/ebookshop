@@ -8,9 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,6 +40,11 @@ public class Book implements Serializable {
   @Size(max = 100)
   @Schema(description = "书籍名字", example = "Java从入门到如土", required = true)
   private String bookName;
+
+  @Min(value = 0)
+  @Max(value = 5)
+  @Schema(description = "书籍评分", example = "4.5", defaultValue = "4.5")
+  private Float starts;
 
   @Size(max = 100)
   @Schema(description = "书籍作者")

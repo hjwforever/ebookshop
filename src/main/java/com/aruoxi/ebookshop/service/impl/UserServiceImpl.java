@@ -1,13 +1,14 @@
-package com.aruoxi.ebookshop.service;
+package com.aruoxi.ebookshop.service.impl;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.aruoxi.ebookshop.controller.dto.RegistrationDto;
+import com.aruoxi.ebookshop.controller.restController.dto.RestRegistrationDto;
 import com.aruoxi.ebookshop.domain.Role;
 import com.aruoxi.ebookshop.domain.User;
 import com.aruoxi.ebookshop.repository.UserRepository;
+import com.aruoxi.ebookshop.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,8 +27,12 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserRepository userRepository;
+
     @Resource
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Resource
+    private RoleServiceImpl roleService;
 
     @Override
     public User findByEmail(String email){
@@ -35,19 +40,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User save(RegistrationDto registration){
-        if (userRepository.findByEmail(registration.getEmail()).isPresent()) {
+    public User save(RestRegistrationDto registration) {
+        Set<Role> roles = new HashSet<>();
+        Set<String> strRoles = registration.getRoles();
+        String email = registration.getEmail();
+
+        if (userRepository.findByEmail(email).isPresent()) {
             //  throw new ValidationException("Email exists!");
-//            LOG.info("Email exists!");
+//              LOG.info("Email exists!");
             return null;
         }
 
+        if (strRoles.isEmpty()) {
+            strRoles.add("ROLE_USER");
+        }
 
         User user = new User();
         user.setUsername(registration.getUsername());
-        user.setEmail(registration.getEmail());
+        user.setEmail(email);
         user.setPassword(passwordEncoder.encode(registration.getPassword()));
-        user.setRoles(Collections.singletonList(new Role("ROLE_USER")));
+
+        strRoles.forEach(role -> {
+                Role _role = roleService.findByName(role);
+                roles.add(_role);
+            });
+        user.setRoles(roles.isEmpty() ?
+            Collections.singletonList(roleService.findByName("ROLE_USER"))
+            : roles);
         return userRepository.save(user);
     }
 
