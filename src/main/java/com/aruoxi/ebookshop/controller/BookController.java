@@ -1,5 +1,6 @@
 package com.aruoxi.ebookshop.controller;
 
+import com.aruoxi.ebookshop.common.CommonResult;
 import com.aruoxi.ebookshop.controller.dto.BookSearchDto;
 import com.aruoxi.ebookshop.domain.Book;
 import com.aruoxi.ebookshop.repository.BookRepository;
@@ -77,5 +78,13 @@ public class BookController {
 //    model.addAttribute("next", pageNumber + 1);
     return "home";
   }
+
+
+//  @GetMapping("/test")
+//  public String findAll(Model model) {
+//    Page<Book> bookp=bookService.findPage(1, 5, "");
+//    model.addAttribute("book",bookp);
+//    return "test";
+//  }
 
 }

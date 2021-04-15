@@ -14,6 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class LoginController {
 
+//    @GetMapping(value = {"/","/index"})
+//    public String root() {
+//        return "home";
+//    }
+
     @GetMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -25,7 +30,7 @@ public class LoginController {
     }
 
     @GetMapping(value = "/logout")
-    public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
+    public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
