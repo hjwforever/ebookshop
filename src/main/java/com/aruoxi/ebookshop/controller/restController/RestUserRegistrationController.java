@@ -1,7 +1,7 @@
 package com.aruoxi.ebookshop.controller.restController;
 
 import com.aruoxi.ebookshop.common.CommonResult;
-import com.aruoxi.ebookshop.controller.dto.RegistrationDto;
+import com.aruoxi.ebookshop.controller.restController.dto.RestRegistrationDto;
 import com.aruoxi.ebookshop.domain.User;
 import com.aruoxi.ebookshop.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,7 +25,7 @@ public class RestUserRegistrationController {
     private UserService userService;
 
     @PostMapping
-    public CommonResult registerUserAccount(@Valid @RequestBody RegistrationDto userDto,
+    public CommonResult registerUserAccount(@Valid @RequestBody RestRegistrationDto userDto,
                                       BindingResult result){
         log.info("userDto = " + userDto);
         User existing = userService.findByEmail(userDto.getEmail());
