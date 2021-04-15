@@ -14,15 +14,16 @@
   <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
   <!-- Core theme CSS (includes Bootstrap)-->
   <link href="css/styles.css" rel="stylesheet" />
+  <link href="css/homestyle.css" rel="stylesheet" type="text/css"/>
   <script type ="text/javascript" th:src="@{/js/common.js}"></script>
 </head>
 <body id="page-top">
-  <h1>Home</h1>
-  <p th:text="${session.logs}"></p>
-  <div th:each="memberEntry,memberStat:${books}">
-    <img th:src="${memberEntry.bookCoverImg}"/>
-    <p th:text="${memberEntry.bookName}"></p>
-    <p th:text="${memberEntry.author}"></p>
+<h1>Home</h1>
+    <p th:text="${session.logs}"></p>
+    <div th:each="memberEntry,memberStat:${books}">
+      <img th:src="${memberEntry.bookCoverImg}"/>
+      <p th:text="${memberEntry.bookName}"></p>
+      <p th:text="${memberEntry.author}"></p>
 <!--    <span>bookUri： </span><a th:href="${memberEntry.bookUri}"></a>-->
     <br/><span>count：</span><a th:text="${memberStat.count}"></a>
     <br/><span>size: </span><a th:text="${memberStat.size}"></a>
@@ -34,6 +35,30 @@
     <br/><span>index: </span><a th:text="${memberStat.index}"></a>
 
   </div>
+
+    <div>
+        <div class="case-container">
+            <div class="case-index-title">
+            </div>
+            <div class="case-index-content">
+                <ul class="clearfix">
+                    <li class="case-example-item" th:each="memberEntry,memberStat:${books}">
+                        <a href="#">
+                            <img th:src="${memberEntry.bookCoverImg}" alt="" class="case-pad">
+                            <div class="case-item-info">
+                                <div class="case-info-logo"><img th:src="${memberEntry.bookCoverImg}" alt=""></div>
+                                <div class="case-info-title" th:text="${memberEntry.bookName}"></div>
+                              <div class="case-info-author" th:text="${memberEntry.author}"></div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+
 
   <!-- Navigation-->
   <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
