@@ -16,6 +16,10 @@ $.fn.serializeObject = function()
     return o;
 };
 
+function bookRefresh (newPageNum) {
+  $('#bookList').load("/books/refresh?newPageNum="+ newPageNum);
+}
+
 //获取url后的参数值
 function getUrlParam(key) {
 	var href = window.location.href;

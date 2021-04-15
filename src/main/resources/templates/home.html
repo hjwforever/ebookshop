@@ -19,29 +19,31 @@
 </head>
 <body id="page-top">
 <h1>Home</h1>
-    <p th:text="${session.logs}"></p>
-    <div th:each="memberEntry,memberStat:${books}">
-      <img th:src="${memberEntry.bookCoverImg}"/>
-      <p th:text="${memberEntry.bookName}"></p>
-      <p th:text="${memberEntry.author}"></p>
-<!--    <span>bookUri： </span><a th:href="${memberEntry.bookUri}"></a>-->
-    <br/><span>count：</span><a th:text="${memberStat.count}"></a>
-    <br/><span>size: </span><a th:text="${memberStat.size}"></a>
-    <br/><span>current: </span><a th:text="${memberStat.current}"></a>
-    <br/><span>even: </span><a th:text="${memberStat.even}"></a>
-    <br/><span>odd: </span><a th:text="${memberStat.odd}"></a>
-<!--    <br/><span>first: </span><a th:text="${memberStat.first}"></a>-->
-<!--    <br/><span>last: </span><a th:text="${memberStat.last}"></a>-->
-    <br/><span>index: </span><a th:text="${memberStat.index}"></a>
+      <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 
-  </div>
+    <br/><br/>
+
+
 
     <div>
-        <div class="case-container">
+      <!-- !!! !!! 特别注意 所有将要刷新的数据 需要被包在下面这个 含有 th:fragment="bookList" 的div块中, 否则数据无法被更新 -->
+        <div class="case-container" id="bookList" th:fragment="bookList">
+          <div>
+            <!-- !!! 上一页下一页按钮 bookRefresh函数可在 static/js/common.js 中找到 -->
+            <button th:if="${hasPre}" id="book_refresh_pre" th:onclick="bookRefresh([[${pageNum-1}]]);" type="button" class="btn btn-primary">
+              上一页</button>
+            <br/><br/>
+            <button th:if="${hasNext}" id="book_refresh_next" th:onclick="bookRefresh([[${pageNum+1}]]);" type="button" class="btn btn-primary" >
+              下一页</button>
+          </div>
             <div class="case-index-title">
             </div>
             <div class="case-index-content">
                 <ul class="clearfix">
+                  <!-- !!! memberEntry 表示循环中的每一条数据(每一本书) -->
+                  <!-- !!! memberStat 表示循环中的每一条数据(每一本书) 的在循环中的相关状态属性
+                           如 count 表示循环从1开始计数的值， index 表示循环从0开始计数的值
+                            even 是否为偶数 ,  odd 是否为奇数 , current 指向该Java对象-->
                     <li class="case-example-item" th:each="memberEntry,memberStat:${books}">
                         <a href="#">
                             <img th:src="${memberEntry.bookCoverImg}" alt="" class="case-pad">
@@ -56,9 +58,6 @@
             </div>
         </div>
     </div>
-
-
-
 
   <!-- Navigation-->
   <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
@@ -371,7 +370,7 @@
                   <div class="divider-custom-line"></div>
                 </div>
                 <!-- Portfolio Modal - Image-->
-                <img class="img-fluid rounded mb-5" src=https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/15/1859.png" alt="" />
+                <img class="img-fluid rounded mb-5" src="https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/15/1859.png" alt="" />
                 <!-- Portfolio Modal - Text-->
                 <p class="mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia neque assumenda ipsam nihil, molestias magnam, recusandae quos quis inventore quisquam velit asperiores, vitae? Reprehenderit soluta, eos quod consequuntur itaque. Nam.</p>
                 <button class="btn btn-primary" data-dismiss="modal">

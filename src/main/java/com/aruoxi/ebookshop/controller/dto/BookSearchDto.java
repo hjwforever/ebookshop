@@ -20,15 +20,16 @@ public class BookSearchDto {
   private Boolean isExact;
   private String beforeYear;
   private String afterYear;
+  private Integer newPageNum;
 
   public BookSearchDto(String bookName, String authorName, Integer pageNum, Integer pageSize, Float minPrice, Float maxPrice, Boolean isExact, String beforeYear, String afterYear) {
-    this.bookName = bookName;
-    this.authorName = authorName;
+    this.bookName = bookName == null ? "" : bookName;
+    this.authorName = authorName == null ? "" : authorName;
     this.pageNum = pageNum == null ? 1 : pageNum;
     this.pageSize = pageSize == null ? 10 : pageSize;
-    this.minPrice = minPrice;
-    this.maxPrice = maxPrice;
-    this.isExact = isExact;
+    this.minPrice = minPrice == null ? 0 : minPrice;
+    this.maxPrice = maxPrice == null ? -1 : maxPrice; // -1表示无穷大
+    this.isExact = isExact != null && isExact;
     this.beforeYear = beforeYear;
     this.afterYear = afterYear;
   }
