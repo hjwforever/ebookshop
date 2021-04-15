@@ -12,19 +12,22 @@ import java.util.List;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
 
-  /**
-   * 按名字查找所有
-   * @param name
-   * @return
-   */
-  List<Book> findByBookName(String name);
+    /**
+     * 按名字查找所有
+     *
+     * @param name
+     * @return
+     */
+    List<Book> findByBookName(String name);
 
-  /**
-   * 分页查找
-   * @param name
-   * @param pageRequest
-   * @return
-   */
-  @Query(value = "select * from ebooks where book_name like concat('%',?1,'%')", countQuery = "select count(*) from ebooks where book_name = concat('%',?1,'%')",  nativeQuery = true)
-  Page<Book> findByNameLike(String name, Pageable pageRequest);
+    /**
+     * 分页查找
+     *
+     * @param name
+     * @param pageRequest
+     * @return
+     */
+    @Query(value = "select * from ebooks where book_name like concat('%',?1,'%')", countQuery = "select count(*) from ebooks where book_name = concat('%',?1,'%')", nativeQuery = true)
+    Page<Book> findByNameLike(String name, Pageable pageRequest);
+
 }
