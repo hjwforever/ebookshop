@@ -92,10 +92,10 @@
         <div class="btn-Pre-or-Next">
           <!-- !!! 上一页下一页按钮 bookRefresh函数可在 static/js/common.js 中找到 -->
           <nobr>
-          <div class="container ">
+          <div class="container">
             <div class="row clearfix">
-              <div class="col-md-12 column">
-                <ul class="pagination">
+              <div class="col-md-6 col-md-offset-4 col-lg-offset-4 col-xl-offset-4">
+                <ul class="pagination justify-content-around">
                   <li>
                     <button th:disabled="!${hasPre}" id="book_refresh_pre" th:onclick="bookRefresh([[${pageNum-1}]]);" type="button" class="btn btn-success">
                       上一页</button>
@@ -127,6 +127,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
+          <li th:if="" class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#bookList">Upload/Download</a></li>
           <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#bookList">BookList</a></li>
           <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#about">About</a></li>
         </ul>
@@ -139,7 +140,7 @@
       <!-- Masthead Avatar Image-->
       <img class="masthead-avatar mb-5" th:src="@{/assets/img/avataaars.svg}" alt="" />
       <!-- Masthead Heading-->
-      <h1 class="masthead-heading text-uppercase mb-0">Start Bootstrap</h1>
+      <h1 class="masthead-heading text-uppercase mb-0">E-Book Shop</h1>
       <!-- Icon Divider-->
       <div class="divider-custom divider-light">
         <div class="divider-custom-line"></div>
@@ -147,7 +148,7 @@
         <div class="divider-custom-line"></div>
       </div>
       <!-- Masthead Subheading-->
-      <p class="masthead-subheading font-weight-light mb-0">Graphic Artist - Web Designer - Illustrator</p>
+      <p class="masthead-subheading font-weight-light mb-0">DS CFX HJW</p>
     </div>
   </header>
 
@@ -164,7 +165,7 @@
       </div>
       <!-- About Section Content-->
       <div class="row">
-        <div class="col-lg-4 ml-auto"><p class="lead">这里是六条单身狗javaee小组分狗，组员名单：黄俊雯，邓硕，陈付鑫</p></div>
+        <div class="col-lg-4 ml-auto"><p class="lead">这里是E-Book Shop开发小组，组员名单：黄俊雯，邓硕，陈付鑫</p></div>
         <div class="col-lg-4 mr-auto"><p class="lead">在本在线书店中，可以在线观看或下载观看电子书</p></div>
       </div>
     </div>

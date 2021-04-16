@@ -99,7 +99,7 @@ public class BookController {
     }
 
     @RequestMapping("/refresh")
-    public String aaa(Model model, BookSearchDto bookSearchDto) {
+    public String aaa(Model model,@RequestParam Integer newPageNum, BookSearchDto bookSearchDto) {
         log.info("model = " + model);
         log.info("bookSearchDto = " + bookSearchDto);
         Page<Book> books;
@@ -107,7 +107,7 @@ public class BookController {
         String bookName = bookSearchDto.getBookName();
         log.info("pageSize = " + pageSize);
         log.info("bookName = " + bookName);
-        books = bookService.findPage(bookSearchDto.getNewPageNum(), pageSize, bookName);
+        books = bookService.findPage(newPageNum, pageSize, bookName);
         log.info("books = " + books);
         model.addAttribute("books", books.getContent());
         HashMap<Object, Object> map = new HashMap<>();

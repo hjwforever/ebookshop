@@ -21,11 +21,14 @@ public class BookSearchDto {
   private String beforeYear;
   private String afterYear;
   private Integer newPageNum;
+  private String searchBookName;
 
-  public BookSearchDto(String bookName, String authorName, Integer pageNum, Integer pageSize, Float minPrice, Float maxPrice, Boolean isExact, String beforeYear, String afterYear) {
+  public BookSearchDto(String bookName,String searchBookName, String authorName, Integer pageNum, Integer pageSize, Float minPrice, Float maxPrice, Boolean isExact, String beforeYear, String afterYear, Integer newPageNum) {
     this.bookName = bookName == null ? "" : bookName;
+    this.searchBookName = searchBookName == null ? "" : searchBookName;
     this.authorName = authorName == null ? "" : authorName;
     this.pageNum = pageNum == null ? 1 : pageNum;
+    this.newPageNum = newPageNum == null ? 1 : newPageNum;
     this.pageSize = pageSize == null ? 10 : pageSize;
     this.minPrice = minPrice == null ? 0 : minPrice;
     this.maxPrice = maxPrice == null ? -1 : maxPrice; // -1表示无穷大
