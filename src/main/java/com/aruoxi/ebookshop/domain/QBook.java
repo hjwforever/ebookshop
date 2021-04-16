@@ -5,6 +5,7 @@ public class QBook {
   public static String SERIAL_VERSION_UID = "SERIAL_VERSION_UID"; 
   public static String bookId = "bookId"; 
   public static String bookName = "bookName"; 
+  public static String starts = "starts"; 
   public static String author = "author"; 
   public static String bookIntro = "bookIntro"; 
   public static String bookUri = "bookUri"; 

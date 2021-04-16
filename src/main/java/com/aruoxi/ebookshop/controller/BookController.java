@@ -33,13 +33,14 @@ import java.util.*;
 public class BookController {
     private static final Logger LOG = LoggerFactory.getLogger(BookController.class);
 
-    @Value("${ebookshop.filePrefix}")
+    @Value("${ebookshop.file.filePrefix}")
     private String filePrefix;
 
     @Resource
     private BookServiceImpl bookService;
     @Resource
     private BookRepository bookRepository;
+
     @Value("${ebookshop.title}")
     private String title;
 
@@ -125,26 +126,15 @@ public class BookController {
         return "home::bookList";
     }
 
-//  @GetMapping("/test")
-//  public String findAll(Model model) {
-//    Page<Book> bookp=bookService.findPage(1, 5, "");
-//    model.addAttribute("book",bookp);
-//    return "test";
-//  }
 
-    @GetMapping(value = "/upload")
-    public String upload() {
-        return "upload";
-    }
-
-    // 上传文件会自动绑定到MultipartFile中
+    // 上传文件至云端
     @PostMapping(value = "/upload1")
     @ResponseBody
     public CommonResult upload1(HttpServletRequest request,
-                               @RequestParam("file") MultipartFile multipartFile) throws Exception {
-        if (multipartFile != null) {
-            String filename = multipartFile.getOriginalFilename();
-            AVFile file = new AVFile(filename, multipartFile.getBytes());
+                               @RequestParam("file") MultipartFile uploadFile) throws Exception {
+        if (uploadFile != null) {
+            String filename = uploadFile.getOriginalFilename();
+            AVFile file = new AVFile(filename, uploadFile.getBytes());
             file.saveInBackground(true).subscribe(new Observer<AVFile>() {
 
                 @Override
@@ -188,34 +178,72 @@ public class BookController {
     @PostMapping(value = "/upload")
     @ResponseBody
     public CommonResult upload(HttpServletRequest request,
-                               @RequestParam("file") MultipartFile file) throws Exception {
+                               @RequestParam("file") MultipartFile uploadFile) throws Exception {
         // 如果文件不为空，写入上传路径
-        if (!file.isEmpty()) {
-            // 上传文件路径
-            String path = request.getServletContext().getRealPath("");
-            LOG.info("path = " + path);
-            // 上传文件名
-            String filename = file.getOriginalFilename();
-            // 将上传文件保存到一个目标文件当中
-            String newPath = filePrefix + filename;
-            LOG.info("filePrefix" + filePrefix);
-            //将临时文件转存到我们的指定目录下
-            file.transferTo(new File(newPath));
+        if (!uploadFile.isEmpty()) {
 
-            //获取不带后缀的文件名，并存在数据库里
-            String newFilename;
-            int dot = filename.lastIndexOf('.');
-            if ((dot > -1) && (dot < (filename.length()))) {
-                newFilename = filename.substring(0, dot);
-            } else {
-                newFilename = filename;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
+            //构建文件上传所要保存的"文件夹路径"--这里是相对路径，保存到项目根路径的文件夹下
+            String realPath = new String("src/main/resources/" + filePrefix);
+            LOG.info("-----------上传文件保存的路径【" + realPath + "】-----------");
+            String format = sdf.format(new Date());
+            //存放上传文件的文件夹
+            File file = new File(realPath + format);
+            LOG.info("-----------存放上传文件的文件夹【" + file + "】-----------");
+            LOG.info("-----------输出文件夹绝对路径 -- 这里的绝对路径是相当于当前项目的路径而不是“容器”路径【" + file.getAbsolutePath() + "】-----------");
+            if (!file.isDirectory()) {
+                //递归生成文件夹
+                file.mkdirs();
             }
-            Book book = new Book();
-            book.setBookName(newFilename);
-            book.setBookUri(newPath);
-            bookService.save(book);
 
-            return CommonResult.success("上传成功");
+            //获取原始的名字  original:最初的，起始的  方法是得到原来的文件名在客户机的文件系统名称
+            String oldName = uploadFile.getOriginalFilename();
+            LOG.info("-----------文件原始的名字【" + oldName + "】-----------");
+            String newName = UUID.randomUUID().toString() + oldName.substring(oldName.lastIndexOf("."),oldName.length());
+            LOG.info("-----------文件要保存后的新名字【" + newName +"】-----------");
+            try {
+                //构建真实的文件路径
+                File newFile = new File(file.getAbsolutePath() + File.separator + newName);
+                //转存文件到指定路径，如果文件名重复的话，将会覆盖掉之前的文件,这里是把文件上传到 “绝对路径”
+                uploadFile.transferTo(newFile);
+//                String filePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/uploadFile/" + format + newName;
+                String filePath = (file.getAbsolutePath() + "/"+ newName).replace('\\','/');
+                LOG.info("-----------【" + filePath + "】-----------");
+
+                Book book = new Book();
+                book.setBookName(file.getName());
+                book.setBookUri(filePath);
+                bookService.save(book);
+
+                return  CommonResult.success(filePath);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //            // 上传文件路径
+//            String path = request.getServletContext().getRealPath("");
+//            LOG.info("path = " + path);
+//            // 上传文件名
+//            String filename = uploadFile.getOriginalFilename();
+//            // 将上传文件保存到一个目标文件当中
+//            String newPath = filePrefix + filename;
+//            LOG.info("filePrefix" + filePrefix);
+//            //将临时文件转存到我们的指定目录下
+//            uploadFile.transferTo(new File(newPath));
+//
+//            //获取不带后缀的文件名，并存在数据库里
+//            String newFilename;
+//            int dot = filename.lastIndexOf('.');
+//            if ((dot > -1) && (dot < (filename.length()))) {
+//                newFilename = filename.substring(0, dot);
+//            } else {
+//                newFilename = filename;
+//            }
+//            Book book = new Book();
+//            book.setBookName(newFilename);
+//            book.setBookUri(newPath);
+//            bookService.save(book);
+//
+//            return CommonResult.success("上传成功");
 
         }
         return CommonResult.fail(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.getReasonPhrase());
@@ -256,7 +284,9 @@ public class BookController {
 //        AVFile.getQuery()
         Book book = bookRepository.findById(bookId).orElse(null);
         // 下载文件路径
-        String path = book.getBookUri();
+        String path = book.getBookUri().replace('\\','/');
+        int firstIndex = path.indexOf("/uploadFile/");
+        LOG.info(path.substring(firstIndex));
         int lastIndex = path.lastIndexOf(".");
         // 构建File
         String filename = book.getBookName() + path.substring(lastIndex);

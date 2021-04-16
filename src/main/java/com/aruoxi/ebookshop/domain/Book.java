@@ -73,7 +73,7 @@ public class Book implements Serializable {
   private String tag;
 
   @Schema(description = "书籍销售状态", example = "售罄")
-  private Byte bookSellStatus;
+  private String bookSellStatus;
 
   @Schema(description = "创建时间")
   @CreationTimestamp
@@ -84,4 +84,28 @@ public class Book implements Serializable {
   @UpdateTimestamp
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private Date updateTime;
+
+  public Book() {
+    this.starts = 3f;
+    this.originalPrice = 0f;
+    this.sellingPrice = 0f;
+    this.bookSellStatus = "热销";
+  }
+
+  public Book(Long bookId, @NotBlank @Size(max = 100) String bookName, @Min(value = 0) @Max(value = 5) Float starts, @Size(max = 100) String author, @Size(max = 200) String bookIntro, String bookUri, String bookCoverImg, Float originalPrice, Float sellingPrice, Long bookCategoryId, String tag, String bookSellStatus, Date createTime, Date updateTime) {
+    this.bookId = bookId;
+    this.bookName = bookName;
+    this.starts = starts;
+    this.author = author;
+    this.bookIntro = bookIntro;
+    this.bookUri = bookUri;
+    this.bookCoverImg = bookCoverImg;
+    this.originalPrice = originalPrice;
+    this.sellingPrice = sellingPrice;
+    this.bookCategoryId = bookCategoryId;
+    this.tag = tag;
+    this.bookSellStatus = bookSellStatus;
+    this.createTime = createTime;
+    this.updateTime = updateTime;
+  }
 }

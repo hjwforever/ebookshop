@@ -44,7 +44,9 @@
                   <img th:src="${memberEntry.bookCoverImg}" alt="" class="case-pad">
                   <div class="case-item-info">
                     <div class="case-info-logo">
-                      <div class="case-info-bookSellStatus" th:text="${'仅剩'+memberEntry.bookSellStatus+'本'}"></div>
+
+                      <div class="case-info-bookSellStatus">
+                        <span class="label label-danger badge-danger">[[${memberEntry.bookSellStatus}]]</span></div>
                     </div>
                     <div class="case-info-title" th:text="${memberEntry.bookName}"></div>
                     <div class="case-info-author" th:text="${memberEntry.author}"></div>
