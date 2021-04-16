@@ -18,7 +18,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
      * @param name
      * @return
      */
-    List<Book> findByBookName(String name);
+   // List<Book> findByBookName(String name);
+
+    Book findByBookName(String name);
 
     /**
      * 分页查找

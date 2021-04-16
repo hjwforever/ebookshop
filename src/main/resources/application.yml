@@ -8,6 +8,11 @@ ebookshop:
   rows_per_page: 10
 
 spring:
+  servlet:
+    multipart:
+      #上传文件大小50M
+      max-file-size: 50MB
+      max-request-size: 50MB
   thymeleaf:
     cache: false
     mode: HTML
