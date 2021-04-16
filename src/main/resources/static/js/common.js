@@ -29,8 +29,8 @@ function bookSearch (searchBookName) {
   $('#bookList').load("/books/refresh?bookName="+ $("#bookSearchText").val());
 }
 
-function bookDownload () {
-  var bookId = $('#downloadBookName').val();
+function bookDownload (bookId) {
+  // var bookId = $('#downloadBookName').val();
   window.location.href = "/books/download?bookId="+bookId;
   // $.get("/books/download?bookname="+bookname).then(res => {
   //   return res;

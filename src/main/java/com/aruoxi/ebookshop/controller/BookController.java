@@ -31,9 +31,11 @@ import java.util.*;
 @Controller
 @RequestMapping("/books")
 public class BookController {
-
-    private static final Logger log = LoggerFactory.getLogger(BookController.class);
     private static final Logger LOG = LoggerFactory.getLogger(BookController.class);
+
+    @Value("${ebookshop.filePrefix}")
+    private String filePrefix;
+
     @Resource
     private BookServiceImpl bookService;
     @Resource
@@ -100,15 +102,15 @@ public class BookController {
 
     @RequestMapping("/refresh")
     public String aaa(Model model,@RequestParam Integer newPageNum, BookSearchDto bookSearchDto) {
-        log.info("model = " + model);
-        log.info("bookSearchDto = " + bookSearchDto);
+        LOG.info("model = " + model);
+        LOG.info("bookSearchDto = " + bookSearchDto);
         Page<Book> books;
         Integer pageSize = bookSearchDto.getPageSize();
         String bookName = bookSearchDto.getBookName();
-        log.info("pageSize = " + pageSize);
-        log.info("bookName = " + bookName);
+        LOG.info("pageSize = " + pageSize);
+        LOG.info("bookName = " + bookName);
         books = bookService.findPage(newPageNum, pageSize, bookName);
-        log.info("books = " + books);
+        LOG.info("books = " + books);
         model.addAttribute("books", books.getContent());
         HashMap<Object, Object> map = new HashMap<>();
         for (int i = 1; i <= books.getTotalPages(); i++) {
@@ -136,9 +138,9 @@ public class BookController {
     }
 
     // 上传文件会自动绑定到MultipartFile中
-    @PostMapping(value = "/upload")
+    @PostMapping(value = "/upload1")
     @ResponseBody
-    public CommonResult upload(HttpServletRequest request,
+    public CommonResult upload1(HttpServletRequest request,
                                @RequestParam("file") MultipartFile multipartFile) throws Exception {
         if (multipartFile != null) {
             String filename = multipartFile.getOriginalFilename();
@@ -150,20 +152,20 @@ public class BookController {
 
                 @Override
                 public void onNext(AVFile file) {
-                    log.debug("文件保存完成 objectId：" + file.getObjectId());
+                    LOG.debug("文件保存完成 objectId：" + file.getObjectId());
                 }
 
                 @Override
                 public void onError(Throwable throwable) {
-                    log.debug("failed to get data. cause: " + throwable.getMessage());
+                    LOG.debug("failed to get data. cause: " + throwable.getMessage());
                 }
 
                 @Override
                 public void onComplete() {}
 
             });;
-            log.info("file.getUrl()" + file.getUrl());
-            log.info("file" + file);
+            LOG.info("file.getUrl()" + file.getUrl());
+            LOG.info("file" + file);
             String newFilename;
             int dot = filename.lastIndexOf('.');
             if ((dot > -1) && (dot < (filename.length()))) {
@@ -180,6 +182,43 @@ public class BookController {
             return CommonResult.success(file.getUrl());
         }
         return CommonResult.fail(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.getReasonPhrase());
+    }
+
+    // 上传文件会自动绑定到MultipartFile中
+    @PostMapping(value = "/upload")
+    @ResponseBody
+    public CommonResult upload(HttpServletRequest request,
+                               @RequestParam("file") MultipartFile file) throws Exception {
+        // 如果文件不为空，写入上传路径
+        if (!file.isEmpty()) {
+            // 上传文件路径
+            String path = request.getServletContext().getRealPath("");
+            LOG.info("path = " + path);
+            // 上传文件名
+            String filename = file.getOriginalFilename();
+            // 将上传文件保存到一个目标文件当中
+            String newPath = filePrefix + filename;
+            LOG.info("filePrefix" + filePrefix);
+            //将临时文件转存到我们的指定目录下
+            file.transferTo(new File(newPath));
+
+            //获取不带后缀的文件名，并存在数据库里
+            String newFilename;
+            int dot = filename.lastIndexOf('.');
+            if ((dot > -1) && (dot < (filename.length()))) {
+                newFilename = filename.substring(0, dot);
+            } else {
+                newFilename = filename;
+            }
+            Book book = new Book();
+            book.setBookName(newFilename);
+            book.setBookUri(newPath);
+            bookService.save(book);
+
+            return CommonResult.success("上传成功");
+
+        }
+        return CommonResult.fail(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.getReasonPhrase());
     }
 
     /**
@@ -218,11 +257,12 @@ public class BookController {
         Book book = bookRepository.findById(bookId).orElse(null);
         // 下载文件路径
         String path = book.getBookUri();
+        int lastIndex = path.lastIndexOf(".");
         // 构建File
-        String filename = book.getBookName();
-        log.info("path= " + path);
-        log.info("File.separator= " + File.separator);
-        log.info(filename);
+        String filename = book.getBookName() + path.substring(lastIndex);
+        LOG.info("path= " + path);
+        LOG.info("File.separator= " + File.separator);
+        LOG.info(filename);
 //        File file = new File(path + File.separator + filename);
         File file = new File(path);
         // ok表示Http协议中的状态 200

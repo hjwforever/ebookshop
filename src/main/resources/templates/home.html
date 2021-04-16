@@ -19,47 +19,19 @@
   <script type ="text/javascript" th:src="@{/js/common.js}"></script>
 </head>
 <body id="page-top">
+<!--  !!! 书籍搜索 -->
+<!--              <div class="row">-->
+<!--                <div class="span12 offset-4">-->
+<!--                  <input class="input-medium search-query" id="bookSearchText" type="text" name="bookName" th:value="${searchBookName}" />-->
+<!--                  <button class="btn btn-info" id="bookSearch" onclick="bookSearch();">查找</button>-->
+<!--                  <script type ="text/javascript" th:src="@{/js/common.js}"></script>-->
+<!--                </div>-->
+<!--              </div>-->
+
 <h1>Home</h1>
       <br/><br/><br/><br/><br/><br/><br/><br/><br/>
-
-
-<div class="container">
-  <div class="row">
-    <div class="col-md-8">
-      <form class="form-horizontal" action="/books/upload" enctype="multipart/form-data" method="post">
-        <div class="form-group">
-          <div class="input-group col-md-4">
-            <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
-            <input class="form-control" placeholder="请选择文件" type="file" name="file"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-md-4">
-            <div class="btn-group btn-group-justified" >
-              <div class="btn-group" >
-                <button type="submit" class="btn btn-success" id="submitbtn">
-                  <span class="glyphicon glyphicon-share"></span>&nbsp;文件上传</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
     <div>
-      <div class="row">
-        <div class="span12 offset-4">
-            <input class="input-medium search-query" id="bookSearchText" type="text" name="bookName" th:value="${searchBookName}" />
-            <button class="btn btn-info" id="bookSearch" onclick="bookSearch();">查找</button>
-          <script type ="text/javascript" th:src="@{/js/common.js}"></script>
-        </div>
-      </div>
-      <input type="text" th:value="${bookname}" id="downloadBookName" name="downloadBookName" placeholder="下载文件的文件名"/>
-      <button class="btn btn-success" id="bookDownload" onclick="bookDownload()">
-        <span class="glyphicon glyphicon-share"></span>&nbsp;文件下载</button>
       <!-- !!! !!! 特别注意 所有将要刷新的数据 需要被包在下面这个 含有 th:fragment="bookList" 的div块中, 否则数据无法被更新 -->
-      
       <div id="bookList" th:fragment="bookList">
         <div class="case-container">
           <div class="case-index-content">
@@ -69,7 +41,6 @@
                        如 count 表示循环从1开始计数的值， index 表示循环从0开始计数的值
                         even 是否为偶数 ,  odd 是否为奇数 , current 指向该Java对象-->
               <li class="case-example-item" th:each="memberEntry,memberStat:${books}">
-                <a href="#">
                   <img th:src="${memberEntry.bookCoverImg}" alt="" class="case-pad">
                   <div class="case-item-info">
                     <div class="case-info-logo">
@@ -82,13 +53,15 @@
                       <div class="price">原价:</div><div class="case-info-originalPrice" th:text="${memberEntry.originalPrice}"></div>
                     </div>
                     <div class="introduction">内容简介</div>
+                    <button class="btn btn-success" th:onclick="bookDownload([[${memberEntry.bookId}]])">
+                      <span class="glyphicon glyphicon-share"></span>&nbsp;文件下载</button>
                     <textarea class="case-info-bookIntro" rows="8" disabled="disabled" readonly="readonly" th:text="${memberEntry.bookIntro}"></textarea>
                   </div>
-                </a>
               </li>
             </ul>
           </div>
         </div>
+
         <div class="btn-Pre-or-Next">
           <!-- !!! 上一页下一页按钮 bookRefresh函数可在 static/js/common.js 中找到 -->
           <nobr>
@@ -127,13 +100,57 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-          <li th:if="" class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#bookList">Upload/Download</a></li>
+          <li class="nav-item mx-0 mx-lg-1"><a data-toggle="modal" data-target="#fileUpload" class="portfolio-item mx-auto nav-link py-3 px-0 px-lg-3 rounded">Upload</a></li>
           <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#bookList">BookList</a></li>
           <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#about">About</a></li>
         </ul>
       </div>
     </div>
   </nav>
+<div class="portfolio-modal modal fade" id="fileUpload" tabindex="-1" role="dialog" aria-labelledby="fileUploadLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true"><i class="fas fa-times"></i></span>
+      </button>
+      <div class="modal-body text-center">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-12">
+              <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0" id="fileUploadLabel">文件上传</h2>
+              <div class="divider-custom">
+                <div class="divider-custom-line"></div>
+                <div class="divider-custom-icon"><i class="fas fa-file"></i></div>
+                <div class="divider-custom-line"></div>
+              </div>
+                <div class="col-lg-12">
+                    <form class="form-horizontal mx-auto" action="/books/upload" enctype="multipart/form-data" method="post">
+                        <div class="col-sm-8 col-md-6 offset-3">
+                          <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                          <input placeholder="请选择文件" type="file" name="file"/>
+                        </div>
+                        <div class="col-sm-4 col-md-6 offset-4">
+                          <div class="btn-group btn-group-justified" >
+                            <div class="btn-group" >
+                              <button type="submit" class="btn btn-success" id="submitbtn">
+                                <span class="glyphicon glyphicon-share"></span>&nbsp;文件上传</button>
+                            </div>
+                          </div>
+                        </div>
+                    </form>
+                </div>
+              <br/><br/>
+              <button class="btn btn-primary" data-dismiss="modal">
+                <i class="fas fa-times fa-fw"></i>
+                返回
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
   <!-- Masthead-->
   <header class="masthead bg-primary text-white text-center">
     <div class="container d-flex align-items-center flex-column">
