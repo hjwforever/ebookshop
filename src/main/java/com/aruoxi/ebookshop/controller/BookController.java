@@ -62,7 +62,6 @@ public class BookController {
         request.getSession().setAttribute("LOGS_SESSION", logs);
 
         Page<Book> books = bookService.findPage(bookSearchDto.getPageNum(), bookSearchDto.getPageSize(), bookSearchDto.getBookName());
-        model.addAttribute("books", books.getContent());
         LOG.info("总分页数据 = " + books);
         LOG.info("总页数  " + books.getTotalPages());
         LOG.info("-----------------该页数据------------------------");
@@ -82,6 +81,13 @@ public class BookController {
 //    boolean hasPrev = pageNumber > 1;
 //    boolean hasNext = ((long) pageNumber * rows) < count;
 //    model.addAttribute("books", books);
+        model.addAttribute("books", books.getContent());
+        HashMap<Object, Object> map = new HashMap<>();
+        for (int i = 1; i <= books.getTotalPages(); i++) {
+            map.put(i,i);
+        }
+        LOG.info("map = " + map);
+        model.addAttribute("totalPages", map);
         model.addAttribute("hasPre", books.hasPrevious());
         model.addAttribute("hasNext", books.hasNext());
         model.addAttribute("pageNum", books.getNumber() + 1);
@@ -93,7 +99,7 @@ public class BookController {
     }
 
     @RequestMapping("/refresh")
-    public String aaa(Model model, @RequestParam Integer newPageNum, BookSearchDto bookSearchDto) {
+    public String aaa(Model model, BookSearchDto bookSearchDto) {
         log.info("model = " + model);
         log.info("bookSearchDto = " + bookSearchDto);
         Page<Book> books;
@@ -101,9 +107,14 @@ public class BookController {
         String bookName = bookSearchDto.getBookName();
         log.info("pageSize = " + pageSize);
         log.info("bookName = " + bookName);
-        books = bookService.findPage(newPageNum, pageSize, bookName);
+        books = bookService.findPage(bookSearchDto.getNewPageNum(), pageSize, bookName);
         log.info("books = " + books);
         model.addAttribute("books", books.getContent());
+        HashMap<Object, Object> map = new HashMap<>();
+        for (int i = 1; i <= books.getTotalPages(); i++) {
+            map.put(i,i);
+        }
+        model.addAttribute("totalPages", map);
         model.addAttribute("hasPre", books.hasPrevious());
         model.addAttribute("hasNext", books.hasNext());
         model.addAttribute("pageNum", books.getNumber() + 1);
@@ -133,14 +144,23 @@ public class BookController {
             String filename = multipartFile.getOriginalFilename();
             AVFile file = new AVFile(filename, multipartFile.getBytes());
             file.saveInBackground(true).subscribe(new Observer<AVFile>() {
+
+                @Override
                 public void onSubscribe(Disposable disposable) {}
+
+                @Override
                 public void onNext(AVFile file) {
                     log.debug("文件保存完成 objectId：" + file.getObjectId());
                 }
+
+                @Override
                 public void onError(Throwable throwable) {
                     log.debug("failed to get data. cause: " + throwable.getMessage());
                 }
+
+                @Override
                 public void onComplete() {}
+
             });;
             log.info("file.getUrl()" + file.getUrl());
             log.info("file" + file);
