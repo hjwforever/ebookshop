@@ -196,6 +196,11 @@ a:hover {
     resize:none;
 }
 
+.btn-Pre-or-Next {
+    text-align: center;
+    margin-top: 20px;
+    /*position:relative*/
+}
 .case-info-text {
     font-size: 14px;
     color: #666;
