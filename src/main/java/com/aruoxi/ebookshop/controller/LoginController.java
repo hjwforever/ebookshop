@@ -25,7 +25,7 @@ public class LoginController {
         if (!(auth instanceof AnonymousAuthenticationToken)) {
             // todo
             //  return "redirect:/contacts";
-            return "redirect:home";
+            return "redirect:/home";
         } else return "login";
     }
 
