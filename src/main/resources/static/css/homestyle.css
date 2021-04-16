@@ -60,9 +60,10 @@ a:hover {
 }
 /* 必要布局样式css */
 .case-container {
-    width: 1200px;
+    width: 90%;
     margin: 0 auto;
     padding: 0;
+    text-align: center;
 }
 .case-index-title {
     font-size: 16px;
@@ -82,7 +83,7 @@ a:hover {
     text-align: center;
     font-size: 14px;
     display: block;
-    margin: 25px auto 0;
+    margin: 20px auto 0;
     transition: all .2s;
 }
 .case-index-title a:hover {
@@ -92,13 +93,14 @@ a:hover {
 }
 .case-index-content {
     position: relative;
+    padding-left: 20px;
 }
 .case-index-content ul {
     margin-right: -18px;
 }
 .case-example-item {
     float: left;
-    width: 286px;
+    width: 250px;
     height: 315px;
     overflow: hidden;
     margin: 0 18px 18px 0;
@@ -108,8 +110,10 @@ a:hover {
     transition: all .2s;
 }
 .case-example-item a .case-pad {
-    width: 286px;
-    height: 180px;
+    /*width: 286px;*/
+    /*height: 180px;*/
+    height: 100%;
+    width: 100%;
 }
 .case-item-info {
     height: 135px;
@@ -120,10 +124,11 @@ a:hover {
     bottom: 0;
     background: #fff;
     transition: all .2s;
+    opacity: 0.85;
 }
 .case-info-logo {
     margin-top: 0;
-    margin-bottom: 8px;
+    /*margin-bottom: 8px;*/
     height: 80px;
     transition: all .2s;
 }
@@ -131,7 +136,7 @@ a:hover {
     font-size: 20px;
     font-weight: bolder;
     color: #646466;
-    margin-top: -80px;
+    margin-top: -55px;
     margin-bottom: 0px;
 }
 .case-info-author {
@@ -139,16 +144,58 @@ a:hover {
     color: #646466;
     margin-bottom: 0px;
 }
-.case-info-maxprice {
+.case-info-price {
+    /*font-size: 14px;*/
+    /*color: #646466;*/
+    /*margin-bottom: 0px;*/
+    /*display: inline-block;*/
+}
+.price {
+    font-size: 10px;
+    color: #646466;
+    display: inline;
+    margin-bottom: 0px;
+}
+/*原价*/
+.case-info-price .case-info-originalPrice {
+    font-size: 25px;
+    color: #646466;
+    margin-bottom: 0px;
+    text-decoration:line-through;
+    display: inline;
+}
+/*现价*/
+.case-info-price .case-info-sellingPrice{
+    font-size: 35px;
+    font-weight: bolder;
+    color: #ee0707;
+    margin-bottom: 0px;
+    display: inline;
+    margin-right: 20px;
+}
+/*书籍销售状态*/
+.case-info-bookSellStatus {
+    color: #646466;
+    font-size: 3px;
+    text-align: right;
+}
+.introduction {
+    margin-top: 20px;
+    color: #646466;
+    font-size: 20px;
+    font-weight: bolder;
+}
+.case-info-bookIntro {
+    width: 70%;
     font-size: 14px;
     color: #646466;
     margin-bottom: 0px;
+    background: transparent;
+    border-style: none;
+    overflow:hidden;
+    resize:none;
 }
-.case-info-minprice{
-    font-size: 14px;
-    color: #646466;
-    margin-bottom: 0px;
-}
+
 .case-info-text {
     font-size: 14px;
     color: #666;

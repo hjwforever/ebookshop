@@ -36,8 +36,7 @@
             <button th:if="${hasNext}" id="book_refresh_next" th:onclick="bookRefresh([[${pageNum+1}]]);" type="button" class="btn btn-primary" >
               下一页</button>
           </div>
-            <div class="case-index-title">
-            </div>
+          </br>
             <div class="case-index-content">
                 <ul class="clearfix">
                   <!-- !!! memberEntry 表示循环中的每一条数据(每一本书) -->
@@ -48,9 +47,20 @@
                         <a href="#">
                             <img th:src="${memberEntry.bookCoverImg}" alt="" class="case-pad">
                             <div class="case-item-info">
-                                <div class="case-info-logo"><img th:src="${memberEntry.bookCoverImg}" alt=""></div>
+                                <div class="case-info-logo">
+                                  <div class="case-info-bookSellStatus" th:text="${'仅剩'+memberEntry.bookSellStatus+'本'}"></div>
+                                </div>
+<!--                              <img th:src="${memberEntry.bookCoverImg}" alt="">-->
                                 <div class="case-info-title" th:text="${memberEntry.bookName}"></div>
                               <div class="case-info-author" th:text="${memberEntry.author}"></div>
+                              <div class="case-info-price">
+                                <div class="price">现价:</div><div class="case-info-sellingPrice" th:text="${memberEntry.sellingPrice}"></div>
+                                <div class="price">原价:</div><div class="case-info-originalPrice" th:text="${memberEntry.originalPrice}"></div>
+                              </div>
+<!--                              <div class="case-info-bookSellStatus" th:text="${'仅剩'+memberEntry.bookSellStatus+'本'}"></div>-->
+<!--                              <div class="case-info-bookIntro" th:text="${memberEntry.bookIntro}"></div>-->
+                              <div class="introduction">内容简介</div>
+                              <textarea class="case-info-bookIntro" rows="8" disabled="disabled" readonly="readonly" th:text="${memberEntry.bookIntro}"></textarea>
                             </div>
                         </a>
                     </li>
