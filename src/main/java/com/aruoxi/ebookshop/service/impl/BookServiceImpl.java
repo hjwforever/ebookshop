@@ -76,8 +76,8 @@ public class BookServiceImpl implements BookService {
         String strTmp = "";
 
         StringBuilder bookContent = new StringBuilder();
-        int i = 0;
-        while (((strTmp = buffReader.readLine()) != null) && (i < 15)) {
+        int i = (pageNum-1)*15;
+        while (((strTmp = buffReader.readLine()) != null) && (i < (pageNum)*15)) {
             System.out.println(strTmp);
             bookContent.append(strTmp);
             i++;
