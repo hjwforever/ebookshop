@@ -4,6 +4,8 @@ package com.aruoxi.ebookshop.service;
 import com.aruoxi.ebookshop.domain.Book;
 import org.springframework.data.domain.Page;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -19,4 +21,5 @@ public interface BookService {
    Book findById(Long id);
    List<Book> findAll();
    Page<Book> findPage(Integer pageNum, Integer pageSize, String name);
+   String getbookContent(Long bookId,int pageNum) throws IOException;
 }
