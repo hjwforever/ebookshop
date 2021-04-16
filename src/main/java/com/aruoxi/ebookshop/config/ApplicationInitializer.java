@@ -1,8 +1,9 @@
 package com.aruoxi.ebookshop.config;
 
-import com.aruoxi.ebookshop.controller.dto.RegistrationDto;
-import com.aruoxi.ebookshop.domain.User;
-import com.aruoxi.ebookshop.repository.BookRepository;
+import cn.leancloud.AVFile;
+import cn.leancloud.AVLogger;
+import cn.leancloud.AVObject;
+import cn.leancloud.core.AVOSCloud;
 import com.aruoxi.ebookshop.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +11,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,14 +22,22 @@ public class ApplicationInitializer implements ApplicationListener<ApplicationRe
     private final List<String> emails = Arrays.asList("test","cfx","ds","hjw");
     private final List<String> usernames = Arrays.asList("Ada Lovelace","Alan Turing","Dennis Ritchie","Mark Jhon");
 
+    private final MyProps myProps;
+
     private final UserService userService;
 
-    public ApplicationInitializer(UserService userService) {
+    public ApplicationInitializer(MyProps myProps, UserService userService) {
+        this.myProps = myProps;
         this.userService = userService;
     }
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+        AVOSCloud.setLogLevel(AVLogger.Level.DEBUG);
+        AVOSCloud.initialize(myProps.getAppId(), myProps.getAppKey());
+//        AVFile file = new AVFile("resume.txt", "LeanCloud".getBytes());
+//        AVFile file = new AVFile("resume.txt", "LeanCloud".getBytes());
+
 //        LOG.info("----------开始添加用户-------------------");
 
 //        for (int i = 0; i < emails.size(); ++i) {

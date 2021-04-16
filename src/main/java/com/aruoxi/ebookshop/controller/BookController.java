@@ -1,15 +1,16 @@
 package com.aruoxi.ebookshop.controller;
 
+import cn.leancloud.AVFile;
 import com.aruoxi.ebookshop.common.CommonResult;
 import com.aruoxi.ebookshop.controller.dto.BookSearchDto;
 import com.aruoxi.ebookshop.domain.Book;
 import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.impl.BookServiceImpl;
-import com.sun.org.glassfish.gmbal.ParameterNames;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -25,10 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Controller
 @RequestMapping("/books")
@@ -130,20 +128,22 @@ public class BookController {
     @PostMapping(value = "/upload")
     @ResponseBody
     public CommonResult upload(HttpServletRequest request,
-                               @RequestParam("file") MultipartFile file) throws Exception {
-        // 如果文件不为空，写入上传路径
-        if (!file.isEmpty()) {
-            // 上传文件路径
-            String path = request.getServletContext().getRealPath("");
-            System.out.println("path = " + path);
-            // 上传文件名
-            String filename = file.getOriginalFilename();
-            // 将上传文件保存到一个目标文件当中
-            String newPath = "D:/book/" + filename;
-            //将临时文件转存到我们的指定目录下
-            file.transferTo(new File(newPath));
-
-            //获取不带后缀的文件名，并存在数据库里
+                               @RequestParam("file") MultipartFile multipartFile) throws Exception {
+        if (multipartFile != null) {
+            String filename = multipartFile.getOriginalFilename();
+            AVFile file = new AVFile(filename, multipartFile.getBytes());
+            file.saveInBackground(true).subscribe(new Observer<AVFile>() {
+                public void onSubscribe(Disposable disposable) {}
+                public void onNext(AVFile file) {
+                    log.debug("文件保存完成 objectId：" + file.getObjectId());
+                }
+                public void onError(Throwable throwable) {
+                    log.debug("failed to get data. cause: " + throwable.getMessage());
+                }
+                public void onComplete() {}
+            });;
+            log.info("file.getUrl()" + file.getUrl());
+            log.info("file" + file);
             String newFilename;
             int dot = filename.lastIndexOf('.');
             if ((dot > -1) && (dot < (filename.length()))) {
@@ -151,29 +151,60 @@ public class BookController {
             } else {
                 newFilename = filename;
             }
+
             Book book = new Book();
             book.setBookName(newFilename);
-            book.setBookUri(newPath);
+            book.setBookUri(file.getUrl());
             bookService.save(book);
 
-            return CommonResult.success("上传成功");
-
+            return CommonResult.success(file.getUrl());
         }
-        return CommonResult.fail(HttpStatus.UNAUTHORIZED, HttpStatus.UNAUTHORIZED.getReasonPhrase());
-
+        return CommonResult.fail(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.getReasonPhrase());
     }
 
+    /**
+     * 获取下载链接 如 { "url": "http://example.com/books/book1.txt" }
+     * @param request
+     * @param userAgent
+     * @param bookId
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/downloadUrl")
+    public CommonResult download(HttpServletRequest request,
+                                           @RequestHeader("User-Agent") String userAgent,
+                                           @RequestParam("bookId") Long bookId,
+                                           Model model) throws Exception {
+        return getBookUrl(bookId, bookRepository);
+    }
+
+    public static CommonResult getBookUrl(@RequestParam("bookId") Long bookId, BookRepository bookRepository) {
+        Book book = bookRepository.findById(bookId).orElse(null);
+        if (book != null) {
+            HashMap<Object, Object> map = new HashMap<>();
+            map.put("url",book.getBookUri());
+            return CommonResult.success(map);
+        }
+        return CommonResult.fail(HttpStatus.NOT_FOUND,HttpStatus.NOT_FOUND.getReasonPhrase());
+    }
 
     @RequestMapping(value = "/download")
-    public ResponseEntity<byte[]> download(HttpServletRequest request,
+    public ResponseEntity<byte[]> download1(HttpServletRequest request,
                                            @RequestHeader("User-Agent") String userAgent,
-                                           @RequestParam("bookname") String bookname,
+                                           @RequestParam("bookId") Long bookId,
                                            Model model) throws Exception {
+//        AVFile.getQuery()
+        Book book = bookRepository.findById(bookId).orElse(null);
         // 下载文件路径
-        String path = bookRepository.findByBookName(bookname).getBookUri();
+        String path = book.getBookUri();
         // 构建File
-        String filename = bookname + ".txt";
-        File file = new File(path + File.separator + filename);
+        String filename = book.getBookName();
+        log.info("path= " + path);
+        log.info("File.separator= " + File.separator);
+        log.info(filename);
+//        File file = new File(path + File.separator + filename);
+        File file = new File(path);
         // ok表示Http协议中的状态 200
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         // 内容长度
@@ -194,6 +225,5 @@ public class BookController {
         }
         return builder.body(FileUtils.readFileToByteArray(file));
     }
-
 
 }

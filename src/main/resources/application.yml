@@ -6,7 +6,9 @@ server:
 ebookshop:
   title: E-Book Shop
   rows_per_page: 10
-
+  appid: CyF9Q1Ug9LkqeKsK32cHqNE3-gzGzoHsz
+  appKey: RpP6VQSp0Y4R9wEWXLwVLtFE
+  appUrl:
 spring:
   servlet:
     multipart:

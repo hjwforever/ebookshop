@@ -20,6 +20,14 @@ function bookRefresh (newPageNum) {
   $('#bookList').load("/books/refresh?newPageNum="+ newPageNum);
 }
 
+function bookDownload () {
+  var bookname = $('#downloadBookName').val();
+  window.location.href = "/books/download?bookname="+bookname;
+  // $.get("/books/download?bookname="+bookname).then(res => {
+  //   return res;
+  // });
+}
+
 //获取url后的参数值
 function getUrlParam(key) {
 	var href = window.location.href;

@@ -3,14 +3,22 @@ package com.aruoxi.ebookshop.controller.restController;
 import com.aruoxi.ebookshop.common.CommonResult;
 import com.aruoxi.ebookshop.controller.dto.BookSearchDto;
 import com.aruoxi.ebookshop.domain.Book;
+import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.impl.BookServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.net.URLEncoder;
+import java.util.HashMap;
+
+import static com.aruoxi.ebookshop.controller.BookController.getBookUrl;
 
 @RestController
 @RequestMapping("/api/books")
@@ -19,6 +27,9 @@ public class RestBookController {
     private static final Logger log = LoggerFactory.getLogger(RestBookController.class);
     @Resource
     private BookServiceImpl bookService;
+
+    @Resource
+    private BookRepository bookRepository;
 
     // 根据id查询书籍
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -58,4 +69,11 @@ public class RestBookController {
         bookService.delete(id);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/downloadUrl")
+    public CommonResult download(HttpServletRequest request,
+                                 @RequestHeader("User-Agent") String userAgent,
+                                 @RequestParam("bookId") Long bookId) throws Exception {
+        return getBookUrl(bookId, bookRepository);
+    }
 }
