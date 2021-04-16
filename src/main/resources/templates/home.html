@@ -15,6 +15,7 @@
   <!-- Core theme CSS (includes Bootstrap)-->
   <link href="css/styles.css" rel="stylesheet" />
   <link href="css/homestyle.css" rel="stylesheet" type="text/css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script type ="text/javascript" th:src="@{/js/common.js}"></script>
 </head>
 <body id="page-top">
@@ -47,20 +48,41 @@
   </div>
 </div>
     <div>
+      <div class="row">
+        <div class="span12 offset-4">
+            <input class="input-medium search-query" id="bookSearchText" type="text" name="bookName" th:value="${searchBookName}" />
+            <button class="btn btn-info" id="bookSearch" onclick="bookSearch();">查找</button>
+          <script type ="text/javascript" th:src="@{/js/common.js}"></script>
+        </div>
+      </div>
       <input type="text" th:value="${bookname}" id="downloadBookName" name="downloadBookName" placeholder="下载文件的文件名"/>
       <button class="btn btn-success" id="bookDownload" onclick="bookDownload()">
         <span class="glyphicon glyphicon-share"></span>&nbsp;文件下载</button>
       <!-- !!! !!! 特别注意 所有将要刷新的数据 需要被包在下面这个 含有 th:fragment="bookList" 的div块中, 否则数据无法被更新 -->
-        <div class="case-container" id="bookList" th:fragment="bookList">
-          <div>
-            <!-- !!! 上一页下一页按钮 bookRefresh函数可在 static/js/common.js 中找到 -->
-            <button th:if="${hasPre}" id="book_refresh_pre" th:onclick="bookRefresh([[${pageNum-1}]]);" type="button" class="btn btn-primary">
-              上一页</button>
-            <br/><br/>
-            <button th:if="${hasNext}" id="book_refresh_next" th:onclick="bookRefresh([[${pageNum+1}]]);" type="button" class="btn btn-primary" >
-              下一页</button>
+        <div  id="bookList" th:fragment="bookList">
+          <!-- !!! 上一页下一页按钮 bookRefresh函数可在 static/js/common.js 中找到 -->
+
+          <div class="container ">
+            <div class="row clearfix">
+              <div class="col-md-12 column">
+                <ul class="pagination">
+                  <li>
+                    <button th:disabled="!${hasPre}" id="book_refresh_pre" th:onclick="bookRefresh([[${pageNum-1}]]);" type="button" class="btn btn-success">
+                      上一页</button>
+                  </li>
+                  <li th:each="page,pageStat:${totalPages}">
+                    <button th:onclick="bookRefresh([[${page.value}]])" class="btn btn-small btn-outline-success">[[${page.value}]]</button>
+                  </li>
+                  <li>
+                    <button th:disabled="!${hasNext}" id="book_refresh_next" th:onclick="bookRefresh([[${pageNum+1}]]);" type="button" class="btn btn-success" >
+                      下一页</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
           </br>
+          <div class="case-container">
             <div class="case-index-content">
                 <ul class="clearfix">
                   <!-- !!! memberEntry 表示循环中的每一条数据(每一本书) -->
@@ -90,6 +112,7 @@
                     </li>
                 </ul>
             </div>
+          </div>
         </div>
     </div>
 
