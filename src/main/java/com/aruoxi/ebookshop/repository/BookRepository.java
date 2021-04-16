@@ -21,6 +21,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
    // List<Book> findByBookName(String name);
 
     Book findByBookName(String name);
+    Book findByBookId(Long bookId);
 
     /**
      * 分页查找

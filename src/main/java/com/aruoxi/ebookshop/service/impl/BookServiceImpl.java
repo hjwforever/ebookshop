@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.*;
 import java.util.Date;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public Page<Book> findPage(Integer pageNum, Integer pageSize, String name) {
         Pageable pageRequest = PageRequest.of(pageNum - 1, pageSize,
-            Sort.by("bookId").ascending());
+                Sort.by("bookId").ascending());
         if (name != null && !name.equals("")) {
             return bookRepository.findByNameLike(name, pageRequest);
         }
@@ -64,5 +65,24 @@ public class BookServiceImpl implements BookService {
 
     public Page<Book> findPage(Integer pageNum, Integer pageSize) {
         return findPage(pageNum, pageSize, "");
+    }
+
+    public String getbookContent(Long bookId, int pageNum) throws IOException {
+
+        String filePath = bookRepository.findByBookId(bookId).getBookUri();
+        FileInputStream fin = new FileInputStream(filePath);
+        InputStreamReader reader = new InputStreamReader(fin);
+        BufferedReader buffReader = new BufferedReader(reader);
+        String strTmp = "";
+
+        StringBuilder bookContent = new StringBuilder();
+        int i = (pageNum-1)*15;
+        while (((strTmp = buffReader.readLine()) != null) && (i < (pageNum)*15)) {
+            System.out.println(strTmp);
+            bookContent.append(strTmp);
+            i++;
+        }
+        buffReader.close();
+        return bookContent.toString();
     }
 }
