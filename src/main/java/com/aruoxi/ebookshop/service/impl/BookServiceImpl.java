@@ -74,7 +74,7 @@ public class BookServiceImpl implements BookService {
 //        String filePath=bookService.findById(bookId).getBookUri();
         String filePath = bookRepository.findByBookId(bookId).getBookUri();
         FileInputStream fin = new FileInputStream(filePath);
-        InputStreamReader reader = new InputStreamReader(fin);
+        InputStreamReader reader = new InputStreamReader(fin, "gbk");
         BufferedReader buffReader = new BufferedReader(reader);
         String strTmp = "";
 

@@ -380,11 +380,14 @@ public class BookController {
         }
 
         String content = bookService.getbookContent(bookID, pagenum);
+        Book book = bookRepository.findByBookId(bookID);
         model.addAttribute("totalPages", map);
         model.addAttribute("hasPre", false);
         model.addAttribute("hasNext", pagenum < totalPageNum);
         model.addAttribute("pageNum", pagenum);
         model.addAttribute("content", content);
+        model.addAttribute("bookName", book.getBookName());
+        model.addAttribute("author", book.getAuthor());
         return "content";
     }
 
