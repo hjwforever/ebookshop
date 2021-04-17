@@ -31,7 +31,7 @@ public class RestLoginController {
     private static final Logger log = LoggerFactory.getLogger(RestLoginController.class);
 
 
-    @GetMapping("/api/login")
+    @RequestMapping("/api/login")
     @Operation(summary = "测试登录的接口",
         description = "描述的文字",
         responses = {
