@@ -31,7 +31,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item mx-0 mx-lg-1"><a data-toggle="modal" data-target="#fileUpload" class="portfolio-item mx-auto nav-link py-3 px-0 px-lg-3 rounded">Upload</a></li>
+        <li sec:authorize="hasRole('ADMIN')" class="nav-item mx-0 mx-lg-1"><a data-toggle="modal" data-target="#fileUpload" class="portfolio-item mx-auto nav-link py-3 px-0 px-lg-3 rounded">Upload</a></li>
         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#bookList">BookList</a></li>
         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#about">About</a></li>
         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" th:href="@{/login}">Login</a></li>
@@ -111,14 +111,16 @@
 <br/><br/><br/><br/><br/><br/><br/>
 <div>
   <!--  !!! 书籍搜索 -->
-  <!--              <div class="row">-->
-  <!--                <div class="span12 offset-4">-->
-  <!--                  <input class="input-medium search-query" id="bookSearchText" type="text" name="bookName" th:value="${searchBookName}" />-->
-  <!--                  <button class="btn btn-info" id="bookSearch" onclick="bookSearch();">查找</button>-->
-  <!--                  <script type ="text/javascript" th:src="@{/js/common.js}"></script>-->
-  <!--                </div>-->
-  <!--              </div>-->
-  <!-- !!! !!! 特别注意 所有将要刷新的数据 需要被包在下面这个 含有 th:fragment="bookList" 的div块中, 否则数据无法被更新 -->
+                <div class="row">
+                  <div class="span12 offset-4">
+                    <input class="input-medium search-query" id="bookSearchText" type="text" name="bookName" th:value="${searchBookName}" />
+<!--                    <a th:href="@{/books(bookName=${searchBookName})}">-->
+                      <button class="btn btn-info" id="bookSearch" onclick="bookSearch()">查找</button>
+<!--                    </a>-->
+                    <script type ="text/javascript" th:src="@{/js/common.js}"></script>
+                  </div>
+                </div>
+<!--   !!! !!! 特别注意 所有将要刷新的数据 需要被包在下面这个 含有 th:fragment="bookList" 的div块中, 否则数据无法被更新 -->
   <div id="bookList" th:fragment="bookList">
     <div class="case-container">
       <div class="case-index-content">
@@ -142,8 +144,10 @@
                 <div class="price">原价:</div><div class="case-info-originalPrice" th:text="${memberEntry.getOriginalPrice()}"></div>
               </div>
               <div class="introduction">内容简介</div>
-              <button sec:authorize="hasRole('USER')" class="btn btn-success" th:onclick="bookDownload([[${memberEntry.bookId}]])">
+              <button sec:authorize="hasAnyRole('ADMIN,USER')" class="btn btn-success" th:onclick="bookDownload([[${memberEntry.bookId}]])">
                 <span class="glyphicon glyphicon-share"></span>&nbsp;文件下载</button>
+              <a th:href="@{/books/content(bookId=${memberEntry.bookId})}"><button class="btn btn-info">
+                <span class="glyphicon glyphicon-share"></span>&nbsp;阅读</button></a>
               <textarea class="case-info-bookIntro" rows="8" disabled="disabled" readonly="readonly" th:text="${memberEntry.bookIntro}"></textarea>
             </div>
           </li>

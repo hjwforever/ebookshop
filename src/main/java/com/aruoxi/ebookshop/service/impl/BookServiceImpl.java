@@ -57,7 +57,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public Page<Book> findPage(Integer pageNum, Integer pageSize, String name) {
         Pageable pageRequest = PageRequest.of(pageNum - 1, pageSize,
-                Sort.by("bookId").ascending());
+                Sort.by("starts").ascending());
         if (name != null && !name.equals("")) {
             return bookRepository.findByNameLike(name, pageRequest);
         }

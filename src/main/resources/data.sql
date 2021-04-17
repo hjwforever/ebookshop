@@ -23,7 +23,9 @@ INSERT INTO `users`(`id`, `email`, `password`, `user_name`) VALUES (1, 'test', '
 INSERT INTO `users`(`id`, `email`, `password`, `user_name`) VALUES (2, 'cfx', '$2a$10$fo7LxClOw8clB.A8tTgu/eHMdBiXwlzNbhiWOy72NusUZrRoXwJ.W', 'Alan Turing');
 INSERT INTO `users`(`id`, `email`, `password`, `user_name`) VALUES (3, 'ds', '$2a$10$o2MrPi0qqy0hojLrq.WoAetszZUsfBDPfDo8M.vO6l0vNmcOSObCq', 'Dennis Ritchie');
 INSERT INTO `users`(`id`, `email`, `password`, `user_name`) VALUES (4, 'hjw', '$2a$10$UxhxM2Wvfc43uiEf.kOG4uyVM.cdYu6dVgUxT.GNBuF6cgGzti.TK', 'Mark Jhon');
+INSERT INTO `users`(`id`, `email`, `password`, `user_name`) VALUES (5, 'root', '$2a$10$UxhxM2Wvfc43uiEf.kOG4uyVM.cdYu6dVgUxT.GNBuF6cgGzti.TK', 'Mark Jhon');
 INSERT INTO `users_roles`(`user_id`, `role_id`) VALUES (1, 3);
-INSERT INTO `users_roles`(`user_id`, `role_id`) VALUES (2, 3);
-INSERT INTO `users_roles`(`user_id`, `role_id`) VALUES (3, 3);
-INSERT INTO `users_roles`(`user_id`, `role_id`) VALUES (4, 3);
+INSERT INTO `users_roles`(`user_id`, `role_id`) VALUES (2, 1);
+INSERT INTO `users_roles`(`user_id`, `role_id`) VALUES (3, 1);
+INSERT INTO `users_roles`(`user_id`, `role_id`) VALUES (4, 1);
+INSERT INTO `users_roles`(`user_id`, `role_id`) VALUES (5, 1);

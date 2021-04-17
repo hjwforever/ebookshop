@@ -32,5 +32,4 @@ public interface BookRepository extends JpaRepository<Book, Long> {
      */
     @Query(value = "select * from ebooks where book_name like concat('%',?1,'%')", countQuery = "select count(*) from ebooks where book_name = concat('%',?1,'%')", nativeQuery = true)
     Page<Book> findByNameLike(String name, Pageable pageRequest);
-
 }

@@ -24,12 +24,13 @@ function contentRefresh(PageNum, bookId) {
     $('#content').load("/books/content/refresh?PageNum=" + PageNum + "&bookId=" + bookId);
 }
 
-function bookSearch(searchBookName) {
-    alert(searchBookName + "12")
-    if (searchBookName === undefind || searchBookName === null) {
-        searchBookName = ""
-    }
-    $('#bookList').load("/books/refresh?bookName=" + $("#bookSearchText").val());
+function bookSearch() {
+    alert($("#bookSearchText").val()+ "12")
+    this.location.href = "/books?bookName=" + $("#bookSearchText").val();
+    // if (searchBookName === undefind || searchBookName === null) {
+    //     searchBookName = ""
+    // }
+    // $('#bookList').load("/books/refresh?newPageNum=2&bookName=" + $("#bookSearchText").val());
 }
 
 function bookDownload(bookId) {
