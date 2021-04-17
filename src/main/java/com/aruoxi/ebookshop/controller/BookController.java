@@ -16,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -63,6 +65,11 @@ public class BookController {
         String log = timeStamp + "/" + "list books";
         logs.add(log);
         request.getSession().setAttribute("LOGS_SESSION", logs);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Object user = auth.getPrincipal();
+        boolean authenticated = auth.isAuthenticated();
+        LOG.info("user" + user);
+
 
         Page<Book> books = bookService.findPage(bookSearchDto.getPageNum(), bookSearchDto.getPageSize(), bookSearchDto.getBookName());
         LOG.info("总分页数据 = " + books);
@@ -178,7 +185,7 @@ public class BookController {
     @PostMapping(value = "/upload")
     @ResponseBody
     public CommonResult upload(HttpServletRequest request,
-                               @RequestParam("file") MultipartFile uploadFile) throws Exception {
+                               @RequestParam("file") MultipartFile uploadFile,@RequestBody BookSearchDto bookSearchDto) throws Exception {
         // 如果文件不为空，写入上传路径
         if (!uploadFile.isEmpty()) {
 
