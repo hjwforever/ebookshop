@@ -1,5 +1,8 @@
 package com.aruoxi.ebookshop.common;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -11,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
  * @Description: MD5加密工具
  */
 public class MD5Util {
+    private static final Logger log = LoggerFactory.getLogger(MD5Util.class);
 
     public static final int time = 5;
 
@@ -41,6 +45,6 @@ public class MD5Util {
     }
 
     public static void main(String[] args) {
-        System.out.println(MD5Util.encode("123456"));
+        log.info(MD5Util.encode("123456"));
     }
 }

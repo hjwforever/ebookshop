@@ -4,6 +4,8 @@ import com.aruoxi.ebookshop.common.CommonResult;
 import com.aruoxi.ebookshop.controller.restController.dto.RestRegistrationDto;
 import com.aruoxi.ebookshop.domain.User;
 import com.aruoxi.ebookshop.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +17,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.Objects;
 
-@Tag(name = "注册接口")
+@Tag(name = "注册API接口")
 @RestController
 @RequestMapping(value = {"/api/signup","/api/register","/api/registration"})
 public class RestUserRegistrationController {
@@ -25,6 +27,8 @@ public class RestUserRegistrationController {
     private UserService userService;
 
     @PostMapping
+    @Operation(summary = "注册新用户",
+        description = "注册新用户")
     public CommonResult registerUserAccount(@Valid @RequestBody RestRegistrationDto userDto,
                                       BindingResult result){
         log.info("userDto = " + userDto);
@@ -34,11 +38,11 @@ public class RestUserRegistrationController {
         }
 
         if (result.hasErrors()) {
-            return CommonResult.fail(HttpStatus.BAD_REQUEST,Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
+            return CommonResult.fail(HttpStatus.BAD_REQUEST, Objects.requireNonNull(result.getFieldError()).getField() + "  " + Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
         }
 
-        userService.save(userDto);
-        return CommonResult.success();
+        User user = userService.save(userDto);
+        return CommonResult.success(user);
     }
 
 }

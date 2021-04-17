@@ -1,16 +1,18 @@
 package com.aruoxi.ebookshop.controller.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 
 
-/**
- * 角色Dto
- */
 @Data
-@Schema
+@Schema(description = "角色信息Dto")
+@Tag(name = "DTO")
 public class RoleDto {
+  @Schema(description = "角色名", required = true)
   private String roleName;
+
+  @Schema(description = "备注")
   private String note;
 
   public RoleDto(String roleName, String note) {

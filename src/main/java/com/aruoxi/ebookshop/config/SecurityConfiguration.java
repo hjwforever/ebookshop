@@ -30,10 +30,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/img/**",
                 "/uploadFile/**",
                 "/webjars/**",
-                "/webjars/**",
                 "/api/**",
                 "/druid/**",
-                "/swagger-ui/**").permitAll()
+                "/swagger-ui/**",
+                "/springdoc/**",
+                "/**/swagger-ui.html",
+                "/**/swagger-ui/**",
+                "/**/swagger-resources/**",
+                "/**/v3/**").permitAll()
             .antMatchers("/","/index","/home").permitAll()
             .antMatchers("/books/**").permitAll()
             .anyRequest().authenticated()

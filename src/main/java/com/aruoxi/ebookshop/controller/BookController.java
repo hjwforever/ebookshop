@@ -8,6 +8,9 @@ import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.impl.BookServiceImpl;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -122,8 +124,12 @@ public class BookController {
         LOG.info("books = " + books);
         model.addAttribute("books", books.getContent());
         HashMap<Object, Object> map = new HashMap<>();
-        for (int i = 1; i <= books.getTotalPages(); i++) {
-            map.put(i, i);
+        int totalPages = books.getTotalPages();
+        for (int i = 1; i <= totalPages; i++) {
+            if (totalPages > 5 && i != 1 && i != totalPages && (i < totalPages / 2 - 1 || i > totalPages / 2 + 1)) {
+                continue;
+            }
+            map.put(i,i);
         }
         model.addAttribute("totalPages", map);
         model.addAttribute("hasPre", books.hasPrevious());
@@ -138,6 +144,7 @@ public class BookController {
     // 上传文件至云端
     @PostMapping(value = "/upload1")
     @ResponseBody
+    @Hidden
     public CommonResult upload1(HttpServletRequest request,
                                 @RequestParam("file") MultipartFile uploadFile) throws Exception {
         if (uploadFile != null) {
@@ -237,7 +244,7 @@ public class BookController {
                 book.setBookUri(filePath);
                 bookService.save(book);
 
-                return CommonResult.success(filePath);
+                return  CommonResult.success(book);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -300,6 +307,7 @@ public class BookController {
     }
 
     @RequestMapping(value = "/download")
+    @Operation(summary = "下载文件", description = "需在页面操做")
     public ResponseEntity<byte[]> download1(HttpServletRequest request,
                                             @RequestHeader("User-Agent") String userAgent,
                                             @RequestParam("bookId") Long bookId,

@@ -22,7 +22,6 @@ import org.springframework.validation.annotation.Validated;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Tag(name = "电子书实体类")
 @Validated
 @Entity
 @Table(name = "ebooks")

@@ -1,9 +1,11 @@
 package com.aruoxi.ebookshop.common;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 @Data
+@ApiResponse(description = "通用返回格式")
 public class CommonResult<T> {
     private Integer code;
 
