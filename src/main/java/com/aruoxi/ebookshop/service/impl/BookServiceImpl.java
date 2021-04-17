@@ -102,7 +102,7 @@ public class BookServiceImpl implements BookService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String contents = new String(content, "gbk");
+        String contents = new String(content, "utf-8");
         System.out.println("contents = " + contents);
 
         int PAGE_BYTES = 1024*3;
@@ -148,7 +148,7 @@ public class BookServiceImpl implements BookService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String contents = new String(content, "gbk");
+        String contents = new String(content, "utf-8");
         System.out.println("contents = " + contents);
 
         int PAGE_BYTES = 1024*3;
