@@ -237,7 +237,7 @@ public class BookController {
                 book.setBookUri(filePath);
                 bookService.save(book);
 
-                return  CommonResult.success(filePath);
+                return CommonResult.success(filePath);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -338,5 +338,55 @@ public class BookController {
         }
         return builder.body(FileUtils.readFileToByteArray(file));
     }
+
+    @RequestMapping("/content/refresh")
+    public String getContentRe(Model model, @RequestParam Integer PageNum, @RequestParam Integer bookId) throws IOException {
+
+        int pagenum = PageNum;
+        model.addAttribute("bookId", bookId);
+
+        Long bookID = bookId.longValue();
+
+        int totalPageNum = bookService.getTotalPageNum(bookID);
+        HashMap<Object, Object> map = new HashMap<>();
+        for (int i = 1; i <= totalPageNum; i++) {
+            map.put(i, i);
+        }
+
+        String content = bookService.getbookContent(bookID, pagenum);
+        model.addAttribute("totalPages", map);
+        model.addAttribute("hasPre", pagenum > 1);
+        model.addAttribute("hasNext", pagenum < totalPageNum);
+        model.addAttribute("pageNum", pagenum);
+//        model.addAttribute("bookId", bookId);
+        model.addAttribute("content", content);
+        return "content";
+    }
+
+    @RequestMapping("/content")
+    public String getContent(Model model, @RequestParam Integer bookId) throws IOException {
+
+        int pagenum = 1;
+
+
+
+        model.addAttribute("bookId", bookId);
+        Long bookID = bookId.longValue();
+
+        int totalPageNum = bookService.getTotalPageNum(bookID);
+        HashMap<Object, Object> map = new HashMap<>();
+        for (int i = 1; i <= totalPageNum; i++) {
+            map.put(i, i);
+        }
+
+        String content = bookService.getbookContent(bookID, pagenum);
+        model.addAttribute("totalPages", map);
+        model.addAttribute("hasPre", false);
+        model.addAttribute("hasNext", pagenum < totalPageNum);
+        model.addAttribute("pageNum", pagenum);
+        model.addAttribute("content", content);
+        return "content";
+    }
+
 
 }

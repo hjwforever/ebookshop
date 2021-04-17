@@ -94,8 +94,6 @@ public class BookServiceImpl implements BookService {
     public int getTotalPageNum(Long bookId) throws IOException {
 //        String filePath="E:/1.txt";
 //        String filePath=bookService.findById(bookId).getBookUri();
-        Book book=bookRepository.findByBookId(bookId);
-        String bookpath=book.getBookUri();
         String filePath = bookRepository.findByBookId(bookId).getBookUri();
         System.out.println(filePath);
         FileInputStream fin = new FileInputStream(filePath);
