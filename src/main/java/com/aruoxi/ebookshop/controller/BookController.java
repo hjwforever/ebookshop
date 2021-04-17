@@ -289,6 +289,7 @@ public class BookController {
      * @throws Exception
      */
     @RequestMapping(value = "/downloadUrl")
+    @Hidden
     public CommonResult download(HttpServletRequest request,
                                  @RequestHeader("User-Agent") String userAgent,
                                  @RequestParam("bookId") Long bookId,
