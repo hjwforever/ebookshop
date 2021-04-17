@@ -1,6 +1,8 @@
 package com.aruoxi.ebookshop.controller.dto;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import org.springframework.core.annotation.AliasFor;
 
@@ -9,18 +11,46 @@ import org.springframework.core.annotation.AliasFor;
  * 查找书籍Dto
  */
 @Data
-@Schema
+@Schema(description = "书籍搜索DTO")
+@Tag(name = "DTO")
 public class BookSearchDto {
+  @Schema(description = "模糊搜索 书籍名")
   private String bookName;
+
+  @Schema(description = "作者名")
   private String authorName;
+
+  @Schema(description = "书籍列表 页码")
   private Integer pageNum;
+
+  @Schema(description = "书籍列表 每页条数")
   private Integer pageSize;
+
+  @Hidden
+  @Schema(description = "最小价格")
   private Float minPrice;
+
+  @Hidden
+  @Schema(description = "最大价格")
   private Float maxPrice;
+
+  @Hidden
+  @Schema(description = "是否精确搜索")
   private Boolean isExact;
+
+  @Hidden
+  @Schema(description = "某年份之前")
   private String beforeYear;
+
+  @Hidden
+  @Schema(description = "某年份之后")
   private String afterYear;
+
+  @Schema(description = "新页面序号")
   private Integer newPageNum;
+
+  @Hidden
+  @Schema(description = "搜索的书籍名")
   private String searchBookName;
 
   public BookSearchDto(String bookName,String searchBookName, String authorName, Integer pageNum, Integer pageSize, Float minPrice, Float maxPrice, Boolean isExact, String beforeYear, String afterYear, Integer newPageNum) {

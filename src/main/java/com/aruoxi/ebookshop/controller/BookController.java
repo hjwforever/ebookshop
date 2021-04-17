@@ -9,6 +9,9 @@ import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.impl.BookServiceImpl;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +34,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Tag(name = "书籍路由")
 @Controller
 @RequestMapping("/books")
 public class BookController {
@@ -109,6 +113,7 @@ public class BookController {
         return "home";
     }
 
+    @Operation(summary = "更新页面数据", description = "ajax局部刷新页面 更新数据")
     @RequestMapping("/refresh")
     public String aaa(Model model,@RequestParam Integer newPageNum, BookSearchDto bookSearchDto) {
         LOG.info("model = " + model);
@@ -122,7 +127,11 @@ public class BookController {
         LOG.info("books = " + books);
         model.addAttribute("books", books.getContent());
         HashMap<Object, Object> map = new HashMap<>();
-        for (int i = 1; i <= books.getTotalPages(); i++) {
+        int totalPages = books.getTotalPages();
+        for (int i = 1; i <= totalPages; i++) {
+            if (totalPages > 5 && i != 1 && i != totalPages && (i < totalPages / 2 - 1 || i > totalPages / 2 + 1)) {
+                continue;
+            }
             map.put(i,i);
         }
         model.addAttribute("totalPages", map);
@@ -138,6 +147,7 @@ public class BookController {
     // 上传文件至云端
     @PostMapping(value = "/upload1")
     @ResponseBody
+    @Hidden
     public CommonResult upload1(HttpServletRequest request,
                                @RequestParam("file") MultipartFile uploadFile) throws Exception {
         if (uploadFile != null) {
@@ -185,6 +195,7 @@ public class BookController {
     // 上传文件会自动绑定到MultipartFile中
     @PostMapping(value = "/upload")
     @ResponseBody
+    @Operation(summary = "上传文件")
     public CommonResult upload(HttpServletRequest request,
                                @RequestParam("file") MultipartFile uploadFile, @RequestParam("bookName") String bookName, @RequestParam("bookAuthor") String bookAuthor, @RequestParam("price") String price) throws Exception {
 
@@ -268,23 +279,6 @@ public class BookController {
         return CommonResult.fail(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.getReasonPhrase());
     }
 
-    /**
-     * 获取下载链接 如 { "url": "http://example.com/books/book1.txt" }
-     * @param request
-     * @param userAgent
-     * @param bookId
-     * @param model
-     * @return
-     * @throws Exception
-     */
-    @RequestMapping(value = "/downloadUrl")
-    public CommonResult download(HttpServletRequest request,
-                                           @RequestHeader("User-Agent") String userAgent,
-                                           @RequestParam("bookId") Long bookId,
-                                           Model model) throws Exception {
-        return getBookUrl(bookId, bookRepository);
-    }
-
     public static CommonResult getBookUrl(@RequestParam("bookId") Long bookId, BookRepository bookRepository) {
         Book book = bookRepository.findById(bookId).orElse(null);
         if (book != null) {
@@ -296,6 +290,7 @@ public class BookController {
     }
 
     @RequestMapping(value = "/download")
+    @Operation(summary = "下载文件", description = "需在页面操做")
     public ResponseEntity<byte[]> download1(HttpServletRequest request,
                                            @RequestHeader("User-Agent") String userAgent,
                                            @RequestParam("bookId") Long bookId,
