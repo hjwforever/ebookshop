@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -96,8 +97,12 @@ public class BookController {
 //    model.addAttribute("books", books);
         model.addAttribute("books", books.getContent());
         HashMap<Object, Object> map = new HashMap<>();
-        for (int i = 1; i <= books.getTotalPages(); i++) {
-            map.put(i, i);
+        int totalPages = books.getTotalPages();
+        for (int i = 1; i <= totalPages; i++) {
+            if (totalPages > 5 && i != 1 && i != totalPages && (i < totalPages / 2 - 1 || i > totalPages / 2 + 1)) {
+                continue;
+            }
+            map.put(i,i);
         }
         LOG.info("map = " + map);
         model.addAttribute("totalPages", map);
@@ -358,17 +363,24 @@ public class BookController {
 
         int totalPageNum = bookService.getTotalPageNum(bookID);
         HashMap<Object, Object> map = new HashMap<>();
-        for (int i = 1; i <= totalPageNum; i++) {
-            map.put(i, i);
+        map.put(1,1);
+        for (int i = 2; i <= totalPageNum; i++) {
+            if (totalPageNum > 5 && i != 1 && i != totalPageNum && (i < totalPageNum / 2 - 1 || i > totalPageNum / 2 + 1)) {
+                continue;
+            }
+            map.put(i,i);
         }
 
         String content = bookService.getbookContent(bookID, pagenum);
+        Book book = bookRepository.findByBookId(bookID);
         model.addAttribute("totalPages", map);
         model.addAttribute("hasPre", pagenum > 1);
         model.addAttribute("hasNext", pagenum < totalPageNum);
         model.addAttribute("pageNum", pagenum);
 //        model.addAttribute("bookId", bookId);
         model.addAttribute("content", content);
+        model.addAttribute("bookName", book.getBookName());
+        model.addAttribute("author", book.getAuthor());
         return "content";
     }
 
@@ -384,8 +396,12 @@ public class BookController {
 
         int totalPageNum = bookService.getTotalPageNum(bookID);
         HashMap<Object, Object> map = new HashMap<>();
-        for (int i = 1; i <= totalPageNum; i++) {
-            map.put(i, i);
+        map.put(1,1);
+        for (int i = 2; i <= totalPageNum; i++) {
+            if (totalPageNum > 5 && i != 1 && i != totalPageNum && (i < totalPageNum / 2 - 1 || i > totalPageNum / 2 + 1)) {
+                continue;
+            }
+            map.put(i,i);
         }
 
         String content = bookService.getbookContent(bookID, pagenum);
