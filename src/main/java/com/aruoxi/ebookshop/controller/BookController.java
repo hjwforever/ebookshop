@@ -3,7 +3,6 @@ package com.aruoxi.ebookshop.controller;
 import cn.leancloud.AVFile;
 import com.aruoxi.ebookshop.common.CommonResult;
 import com.aruoxi.ebookshop.controller.dto.BookSearchDto;
-import com.aruoxi.ebookshop.controller.dto.BookUploadDto;
 import com.aruoxi.ebookshop.domain.Book;
 import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.impl.BookServiceImpl;
@@ -34,7 +33,6 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Tag(name = "书籍路由")
 @Controller
 @RequestMapping("/books")
 public class BookController {
@@ -113,9 +111,8 @@ public class BookController {
         return "home";
     }
 
-    @Operation(summary = "更新页面数据", description = "ajax局部刷新页面 更新数据")
     @RequestMapping("/refresh")
-    public String aaa(Model model,@RequestParam Integer newPageNum, BookSearchDto bookSearchDto) {
+    public String aaa(Model model, @RequestParam Integer newPageNum, BookSearchDto bookSearchDto) {
         LOG.info("model = " + model);
         LOG.info("bookSearchDto = " + bookSearchDto);
         Page<Book> books;
@@ -149,14 +146,15 @@ public class BookController {
     @ResponseBody
     @Hidden
     public CommonResult upload1(HttpServletRequest request,
-                               @RequestParam("file") MultipartFile uploadFile) throws Exception {
+                                @RequestParam("file") MultipartFile uploadFile) throws Exception {
         if (uploadFile != null) {
             String filename = uploadFile.getOriginalFilename();
             AVFile file = new AVFile(filename, uploadFile.getBytes());
             file.saveInBackground(true).subscribe(new Observer<AVFile>() {
 
                 @Override
-                public void onSubscribe(Disposable disposable) {}
+                public void onSubscribe(Disposable disposable) {
+                }
 
                 @Override
                 public void onNext(AVFile file) {
@@ -169,9 +167,11 @@ public class BookController {
                 }
 
                 @Override
-                public void onComplete() {}
+                public void onComplete() {
+                }
 
-            });;
+            });
+            ;
             LOG.info("file.getUrl()" + file.getUrl());
             LOG.info("file" + file);
             String newFilename;
@@ -195,7 +195,6 @@ public class BookController {
     // 上传文件会自动绑定到MultipartFile中
     @PostMapping(value = "/upload")
     @ResponseBody
-    @Operation(summary = "上传文件")
     public CommonResult upload(HttpServletRequest request,
                                @RequestParam("file") MultipartFile uploadFile, @RequestParam("bookName") String bookName, @RequestParam("bookAuthor") String bookAuthor, @RequestParam("price") String price) throws Exception {
 
@@ -219,15 +218,15 @@ public class BookController {
             //获取原始的名字  original:最初的，起始的  方法是得到原来的文件名在客户机的文件系统名称
             String oldName = uploadFile.getOriginalFilename();
             LOG.info("-----------文件原始的名字【" + oldName + "】-----------");
-            String newName = UUID.randomUUID().toString() + oldName.substring(oldName.lastIndexOf("."),oldName.length());
-            LOG.info("-----------文件要保存后的新名字【" + newName +"】-----------");
+            String newName = UUID.randomUUID().toString() + oldName.substring(oldName.lastIndexOf("."), oldName.length());
+            LOG.info("-----------文件要保存后的新名字【" + newName + "】-----------");
             try {
                 //构建真实的文件路径
                 File newFile = new File(file.getAbsolutePath() + File.separator + newName);
                 //转存文件到指定路径，如果文件名重复的话，将会覆盖掉之前的文件,这里是把文件上传到 “绝对路径”
                 uploadFile.transferTo(newFile);
 //                String filePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/uploadFile/" + format + newName;
-                String filePath = (file.getAbsolutePath() + "/"+ newName).replace('\\','/');
+                String filePath = (file.getAbsolutePath() + "/" + newName).replace('\\', '/');
                 LOG.info("-----------【" + filePath + "】-----------");
 
                 String theBookName = bookName != null ? bookName : file.getName();
@@ -279,26 +278,44 @@ public class BookController {
         return CommonResult.fail(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.getReasonPhrase());
     }
 
+    /**
+     * 获取下载链接 如 { "url": "http://example.com/books/book1.txt" }
+     *
+     * @param request
+     * @param userAgent
+     * @param bookId
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/downloadUrl")
+    public CommonResult download(HttpServletRequest request,
+                                 @RequestHeader("User-Agent") String userAgent,
+                                 @RequestParam("bookId") Long bookId,
+                                 Model model) throws Exception {
+        return getBookUrl(bookId, bookRepository);
+    }
+
     public static CommonResult getBookUrl(@RequestParam("bookId") Long bookId, BookRepository bookRepository) {
         Book book = bookRepository.findById(bookId).orElse(null);
         if (book != null) {
             HashMap<Object, Object> map = new HashMap<>();
-            map.put("url",book.getBookUri());
+            map.put("url", book.getBookUri());
             return CommonResult.success(map);
         }
-        return CommonResult.fail(HttpStatus.NOT_FOUND,HttpStatus.NOT_FOUND.getReasonPhrase());
+        return CommonResult.fail(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.getReasonPhrase());
     }
 
     @RequestMapping(value = "/download")
     @Operation(summary = "下载文件", description = "需在页面操做")
     public ResponseEntity<byte[]> download1(HttpServletRequest request,
-                                           @RequestHeader("User-Agent") String userAgent,
-                                           @RequestParam("bookId") Long bookId,
-                                           Model model) throws Exception {
+                                            @RequestHeader("User-Agent") String userAgent,
+                                            @RequestParam("bookId") Long bookId,
+                                            Model model) throws Exception {
 //        AVFile.getQuery()
         Book book = bookRepository.findById(bookId).orElse(null);
         // 下载文件路径
-        String path = book.getBookUri().replace('\\','/');
+        String path = book.getBookUri().replace('\\', '/');
         int firstIndex = path.indexOf("/uploadFile/");
         LOG.info(path.substring(firstIndex));
         int lastIndex = path.lastIndexOf(".");

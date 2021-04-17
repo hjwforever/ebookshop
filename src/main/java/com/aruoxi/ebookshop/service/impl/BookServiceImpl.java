@@ -30,6 +30,9 @@ public class BookServiceImpl implements BookService {
     @Resource
     private BookRepository bookRepository;
 
+    @Resource
+    private BookService bookService;
+
     @Override
     public void save(Book book) {
         book.setCreateTime(new Date());
@@ -67,7 +70,8 @@ public class BookServiceImpl implements BookService {
     }
 
     public String getbookContent(Long bookId, int pageNum) throws IOException {
-
+       // String filePath="E:/1.txt";
+//        String filePath=bookService.findById(bookId).getBookUri();
         String filePath = bookRepository.findByBookId(bookId).getBookUri();
         FileInputStream fin = new FileInputStream(filePath);
         InputStreamReader reader = new InputStreamReader(fin);
@@ -75,13 +79,34 @@ public class BookServiceImpl implements BookService {
         String strTmp = "";
 
         StringBuilder bookContent = new StringBuilder();
-        int i = (pageNum-1)*15;
-        while (((strTmp = buffReader.readLine()) != null) && (i < (pageNum)*15)) {
+        int i = 0;
+        while (((strTmp = buffReader.readLine()) != null) && (i < (pageNum)*20)) {
             System.out.println(strTmp);
-            bookContent.append(strTmp);
+            if(i>(pageNum-1)*20){
+                bookContent.append(strTmp);
+            }
             i++;
         }
         buffReader.close();
         return bookContent.toString();
+    }
+
+    public int getTotalPageNum(Long bookId) throws IOException {
+//        String filePath="E:/1.txt";
+//        String filePath=bookService.findById(bookId).getBookUri();
+        String filePath = bookRepository.findByBookId(bookId).getBookUri();
+        System.out.println(filePath);
+        FileInputStream fin = new FileInputStream(filePath);
+        InputStreamReader reader = new InputStreamReader(fin);
+        BufferedReader buffReader = new BufferedReader(reader);
+        String strTmp = "";
+
+        StringBuilder bookContent = new StringBuilder();
+        int TpageNum = 0;
+        while (((strTmp = buffReader.readLine()) != null)) {
+            TpageNum++;
+        }
+        buffReader.close();
+        return TpageNum;
     }
 }
