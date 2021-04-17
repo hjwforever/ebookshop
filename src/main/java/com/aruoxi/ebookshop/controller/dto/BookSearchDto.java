@@ -17,6 +17,9 @@ public class BookSearchDto {
   @Schema(description = "模糊搜索 书籍名")
   private String bookName;
 
+  @Schema(description = "模糊搜索 书籍名")
+  private Long bookId;
+
   @Schema(description = "作者名")
   private String authorName;
 
@@ -53,8 +56,9 @@ public class BookSearchDto {
   @Schema(description = "搜索的书籍名")
   private String searchBookName;
 
-  public BookSearchDto(String bookName,String searchBookName, String authorName, Integer pageNum, Integer pageSize, Float minPrice, Float maxPrice, Boolean isExact, String beforeYear, String afterYear, Integer newPageNum) {
+  public BookSearchDto(String bookName,Long bookId, String searchBookName, String authorName, Integer pageNum, Integer pageSize, Float minPrice, Float maxPrice, Boolean isExact, String beforeYear, String afterYear, Integer newPageNum) {
     this.bookName = bookName == null ? "" : bookName;
+    this.bookId = bookId == null ? 0 : bookId;
     this.searchBookName = searchBookName == null ? "" : searchBookName;
     this.authorName = authorName == null ? "" : authorName;
     this.pageNum = pageNum == null ? 1 : pageNum;
