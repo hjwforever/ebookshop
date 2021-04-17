@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 
@@ -75,5 +76,14 @@ public class RestBookController {
                                  @RequestHeader("User-Agent") String userAgent,
                                  @RequestParam("bookId") Long bookId) throws Exception {
         return getBookUrl(bookId, bookRepository);
+    }
+
+
+    @GetMapping(value = "/content")
+    public CommonResult<String> findContent(BookSearchDto search) throws IOException {
+        int pageNum = search.getPageNum();
+//        Integer pageSize = search.getPageSize();
+//        String bookName = search.getBookName();
+        return CommonResult.success(bookService.getbookContent(search.getBookId(),pageNum));
     }
 }

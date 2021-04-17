@@ -3,7 +3,6 @@ package com.aruoxi.ebookshop.controller;
 import cn.leancloud.AVFile;
 import com.aruoxi.ebookshop.common.CommonResult;
 import com.aruoxi.ebookshop.controller.dto.BookSearchDto;
-import com.aruoxi.ebookshop.controller.dto.BookUploadDto;
 import com.aruoxi.ebookshop.domain.Book;
 import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.impl.BookServiceImpl;
@@ -27,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -95,7 +95,7 @@ public class BookController {
         model.addAttribute("books", books.getContent());
         HashMap<Object, Object> map = new HashMap<>();
         for (int i = 1; i <= books.getTotalPages(); i++) {
-            map.put(i,i);
+            map.put(i, i);
         }
         LOG.info("map = " + map);
         model.addAttribute("totalPages", map);
@@ -110,7 +110,7 @@ public class BookController {
     }
 
     @RequestMapping("/refresh")
-    public String aaa(Model model,@RequestParam Integer newPageNum, BookSearchDto bookSearchDto) {
+    public String aaa(Model model, @RequestParam Integer newPageNum, BookSearchDto bookSearchDto) {
         LOG.info("model = " + model);
         LOG.info("bookSearchDto = " + bookSearchDto);
         Page<Book> books;
@@ -123,7 +123,7 @@ public class BookController {
         model.addAttribute("books", books.getContent());
         HashMap<Object, Object> map = new HashMap<>();
         for (int i = 1; i <= books.getTotalPages(); i++) {
-            map.put(i,i);
+            map.put(i, i);
         }
         model.addAttribute("totalPages", map);
         model.addAttribute("hasPre", books.hasPrevious());
@@ -139,14 +139,15 @@ public class BookController {
     @PostMapping(value = "/upload1")
     @ResponseBody
     public CommonResult upload1(HttpServletRequest request,
-                               @RequestParam("file") MultipartFile uploadFile) throws Exception {
+                                @RequestParam("file") MultipartFile uploadFile) throws Exception {
         if (uploadFile != null) {
             String filename = uploadFile.getOriginalFilename();
             AVFile file = new AVFile(filename, uploadFile.getBytes());
             file.saveInBackground(true).subscribe(new Observer<AVFile>() {
 
                 @Override
-                public void onSubscribe(Disposable disposable) {}
+                public void onSubscribe(Disposable disposable) {
+                }
 
                 @Override
                 public void onNext(AVFile file) {
@@ -159,9 +160,11 @@ public class BookController {
                 }
 
                 @Override
-                public void onComplete() {}
+                public void onComplete() {
+                }
 
-            });;
+            });
+            ;
             LOG.info("file.getUrl()" + file.getUrl());
             LOG.info("file" + file);
             String newFilename;
@@ -208,15 +211,15 @@ public class BookController {
             //获取原始的名字  original:最初的，起始的  方法是得到原来的文件名在客户机的文件系统名称
             String oldName = uploadFile.getOriginalFilename();
             LOG.info("-----------文件原始的名字【" + oldName + "】-----------");
-            String newName = UUID.randomUUID().toString() + oldName.substring(oldName.lastIndexOf("."),oldName.length());
-            LOG.info("-----------文件要保存后的新名字【" + newName +"】-----------");
+            String newName = UUID.randomUUID().toString() + oldName.substring(oldName.lastIndexOf("."), oldName.length());
+            LOG.info("-----------文件要保存后的新名字【" + newName + "】-----------");
             try {
                 //构建真实的文件路径
                 File newFile = new File(file.getAbsolutePath() + File.separator + newName);
                 //转存文件到指定路径，如果文件名重复的话，将会覆盖掉之前的文件,这里是把文件上传到 “绝对路径”
                 uploadFile.transferTo(newFile);
 //                String filePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/uploadFile/" + format + newName;
-                String filePath = (file.getAbsolutePath() + "/"+ newName).replace('\\','/');
+                String filePath = (file.getAbsolutePath() + "/" + newName).replace('\\', '/');
                 LOG.info("-----------【" + filePath + "】-----------");
 
                 String theBookName = bookName != null ? bookName : file.getName();
@@ -234,7 +237,7 @@ public class BookController {
                 book.setBookUri(filePath);
                 bookService.save(book);
 
-                return  CommonResult.success(book);
+                return CommonResult.success(filePath);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -270,6 +273,7 @@ public class BookController {
 
     /**
      * 获取下载链接 如 { "url": "http://example.com/books/book1.txt" }
+     *
      * @param request
      * @param userAgent
      * @param bookId
@@ -279,9 +283,9 @@ public class BookController {
      */
     @RequestMapping(value = "/downloadUrl")
     public CommonResult download(HttpServletRequest request,
-                                           @RequestHeader("User-Agent") String userAgent,
-                                           @RequestParam("bookId") Long bookId,
-                                           Model model) throws Exception {
+                                 @RequestHeader("User-Agent") String userAgent,
+                                 @RequestParam("bookId") Long bookId,
+                                 Model model) throws Exception {
         return getBookUrl(bookId, bookRepository);
     }
 
@@ -289,21 +293,21 @@ public class BookController {
         Book book = bookRepository.findById(bookId).orElse(null);
         if (book != null) {
             HashMap<Object, Object> map = new HashMap<>();
-            map.put("url",book.getBookUri());
+            map.put("url", book.getBookUri());
             return CommonResult.success(map);
         }
-        return CommonResult.fail(HttpStatus.NOT_FOUND,HttpStatus.NOT_FOUND.getReasonPhrase());
+        return CommonResult.fail(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.getReasonPhrase());
     }
 
     @RequestMapping(value = "/download")
     public ResponseEntity<byte[]> download1(HttpServletRequest request,
-                                           @RequestHeader("User-Agent") String userAgent,
-                                           @RequestParam("bookId") Long bookId,
-                                           Model model) throws Exception {
+                                            @RequestHeader("User-Agent") String userAgent,
+                                            @RequestParam("bookId") Long bookId,
+                                            Model model) throws Exception {
 //        AVFile.getQuery()
         Book book = bookRepository.findById(bookId).orElse(null);
         // 下载文件路径
-        String path = book.getBookUri().replace('\\','/');
+        String path = book.getBookUri().replace('\\', '/');
         int firstIndex = path.indexOf("/uploadFile/");
         LOG.info(path.substring(firstIndex));
         int lastIndex = path.lastIndexOf(".");
@@ -334,5 +338,55 @@ public class BookController {
         }
         return builder.body(FileUtils.readFileToByteArray(file));
     }
+
+    @RequestMapping("/content/refresh")
+    public String getContentRe(Model model, @RequestParam Integer PageNum, @RequestParam Integer bookId) throws IOException {
+
+        int pagenum = PageNum;
+        model.addAttribute("bookId", bookId);
+
+        Long bookID = bookId.longValue();
+
+        int totalPageNum = bookService.getTotalPageNum(bookID);
+        HashMap<Object, Object> map = new HashMap<>();
+        for (int i = 1; i <= totalPageNum; i++) {
+            map.put(i, i);
+        }
+
+        String content = bookService.getbookContent(bookID, pagenum);
+        model.addAttribute("totalPages", map);
+        model.addAttribute("hasPre", pagenum > 1);
+        model.addAttribute("hasNext", pagenum < totalPageNum);
+        model.addAttribute("pageNum", pagenum);
+//        model.addAttribute("bookId", bookId);
+        model.addAttribute("content", content);
+        return "content";
+    }
+
+    @RequestMapping("/content")
+    public String getContent(Model model, @RequestParam Integer bookId) throws IOException {
+
+        int pagenum = 1;
+
+
+
+        model.addAttribute("bookId", bookId);
+        Long bookID = bookId.longValue();
+
+        int totalPageNum = bookService.getTotalPageNum(bookID);
+        HashMap<Object, Object> map = new HashMap<>();
+        for (int i = 1; i <= totalPageNum; i++) {
+            map.put(i, i);
+        }
+
+        String content = bookService.getbookContent(bookID, pagenum);
+        model.addAttribute("totalPages", map);
+        model.addAttribute("hasPre", false);
+        model.addAttribute("hasNext", pagenum < totalPageNum);
+        model.addAttribute("pageNum", pagenum);
+        model.addAttribute("content", content);
+        return "content";
+    }
+
 
 }
