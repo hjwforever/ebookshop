@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns="http://www.w3.org/1999/xhtml">
 <head th:fragment ="header">
     <title>Home</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -10,50 +11,76 @@
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" crossorigin="anonymous"></script>
     <!-- Google fonts-->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+<!--    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />-->
+<!--    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />-->
     <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="css/styles.css" rel="stylesheet" />
-    <link href="css/homestyle.css" rel="stylesheet" type="text/css"/>
+<!--    <link href="css/styles.css" rel="stylesheet" />-->
+<!--    <link href="css/homestyle.css" rel="stylesheet" type="text/css"/>-->
+    <link th:href="@{~/css/article.css}" rel="stylesheet" type="text/css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type ="text/javascript" th:src="@{/js/common.js}"></script>
+
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
 </head>
-<body>
+<body class="all-content">
+
+<!--    <div id="content" th:fragment="content">-->
+
+<!--        <div class="case-container">-->
+<!--            <div class="case-index-content">-->
+<!--                <ul class="clearfix">-->
+<!--                    <span th:text="${content}"></span>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--    </div>-->
 
     <div id="content" th:fragment="content">
-
-        <div class="case-container">
-            <div class="case-index-content">
-                <ul class="clearfix">
-                    <span th:text="${content}"></span>
-                </ul>
+        <div class="book-content">
+            <div class="title" th:text="${bookName}">
+            </div>
+            <div class="author" th:text="${author}">
+            </div>
+            <div class="text" th:text="${content}">
             </div>
         </div>
-
-    </div>
-    <div class="btn-Pre-or-Next">
-        <!-- !!! 上一页下一页按钮 bookRefresh函数可在 static/js/common.js 中找到 -->
-        <nobr>
-            <div class="container">
-                <div class="row clearfix">
-                    <div class="col-md-6 col-md-offset-4 col-lg-offset-4 col-xl-offset-4">
-                        <ul class="pagination justify-content-around">
-                            <li>
-                                <button th:disabled="!${hasPre}" id="book_refresh_pre" th:onclick="contentRefresh([[${pageNum-1}]],[[${bookId}]]);" type="button" class="btn btn-success">
-                                    上一页</button>
-                            </li>
-                            <li th:each="page,pageStat:${totalPages}">
-                                <button th:onclick="contentRefresh([[${page.value}]],[[${bookId}]])" class="btn btn-small btn-outline-success">[[${page.value}]]</button>
-                            </li>
-                            <li>
-                                <button th:disabled="!${hasNext}" id="book_refresh_next" th:onclick="contentRefresh([[${pageNum+1}]],[[${bookId}]]);" type="button" class="btn btn-success" >
-                                    下一页</button>
-                            </li>
-                        </ul>
+        <div class="btn-Pre-or-Next">
+            <!-- !!! 上一页下一页按钮 bookRefresh函数可在 static/js/common.js 中找到 -->
+            <nobr>
+                <div class="container">
+                    <div class="row clearfix">
+                        <div class="col-md-6 col-md-offset-4 col-lg-offset-4 col-xl-offset-4">
+                            <ul class="pagination justify-content-around">
+                                <li>
+                                    <button th:disabled="!${hasPre}" id="book_refresh_pre" th:onclick="contentRefresh([[${pageNum-1}]],[[${bookId}]]);" type="button" class="btn btn-success">
+                                        上一页</button>
+                                </li>
+                                <li th:each="page:${totalPages}">
+                                    <button th:onclick="contentRefresh([[${page.value}]],[[${bookId}]])" class="btn btn-small btn-outline-success">[[${page.value}]]</button>
+                                </li>
+                                <li>
+                                    <button th:disabled="!${hasNext}" id="book_refresh_next" th:onclick="contentRefresh([[${pageNum+1}]],[[${bookId}]]);" type="button" class="btn btn-success" >
+                                        下一页</button>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </nobr>
+            </nobr>
+        </div>
     </div>
+
+
+
 </body>
 </html>

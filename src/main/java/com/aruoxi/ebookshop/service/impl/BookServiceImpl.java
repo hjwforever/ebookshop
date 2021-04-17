@@ -72,41 +72,90 @@ public class BookServiceImpl implements BookService {
     public String getbookContent(Long bookId, int pageNum) throws IOException {
        // String filePath="E:/1.txt";
 //        String filePath=bookService.findById(bookId).getBookUri();
-        String filePath = bookRepository.findByBookId(bookId).getBookUri();
-        FileInputStream fin = new FileInputStream(filePath);
-        InputStreamReader reader = new InputStreamReader(fin);
-        BufferedReader buffReader = new BufferedReader(reader);
-        String strTmp = "";
 
-        StringBuilder bookContent = new StringBuilder();
-        int i = 0;
-        while (((strTmp = buffReader.readLine()) != null) && (i < (pageNum)*20)) {
-            System.out.println(strTmp);
-            if(i>(pageNum-1)*20){
-                bookContent.append(strTmp);
-            }
-            i++;
+//        String filePath = bookRepository.findByBookId(bookId).getBookUri();
+//        FileInputStream fin = new FileInputStream(filePath);
+//        InputStreamReader reader = new InputStreamReader(fin, "gbk");
+//        BufferedReader buffReader = new BufferedReader(reader);
+//        String strTmp = "";
+//
+//        StringBuilder bookContent = new StringBuilder();
+//        int i = 0;
+//        while (((strTmp = buffReader.readLine()) != null) && (i < (pageNum)*20)) {
+//            System.out.println(strTmp);
+//            if(i>(pageNum-1)*20){
+//                bookContent.append(strTmp);
+//            }
+//            i++;
+//        }
+//        buffReader.close();
+//        return bookContent.toString();
+
+        String filePath = bookRepository.findByBookId(bookId).getBookUri();
+        File textFile = new File(filePath);
+        int bytes = (int) textFile.length();
+//        System.out.println(bytes);
+        byte[] content = new byte[(int) textFile.length()];
+        try (FileInputStream fileInputStream = new FileInputStream(textFile)) {
+            fileInputStream.read(content);
+//            System.out.println(new String(content, "UTF-8"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        buffReader.close();
-        return bookContent.toString();
+        String contents = new String(content, "gbk");
+        System.out.println("contents = " + contents);
+
+        int PAGE_BYTES = 1024*3;
+
+        int num = contents.length();
+        int pages = num/PAGE_BYTES + 1;
+
+        String contxt = "";
+
+        if (pageNum == pages) {
+            contxt = contents.substring((pageNum - 1) * PAGE_BYTES, num);
+        } else {
+            contxt = contents.substring((pageNum - 1) * PAGE_BYTES, pageNum * PAGE_BYTES);
+        }
+        return contxt;
     }
 
     public int getTotalPageNum(Long bookId) throws IOException {
 //        String filePath="E:/1.txt";
 //        String filePath=bookService.findById(bookId).getBookUri();
-        String filePath = bookRepository.findByBookId(bookId).getBookUri();
-        System.out.println(filePath);
-        FileInputStream fin = new FileInputStream(filePath);
-        InputStreamReader reader = new InputStreamReader(fin);
-        BufferedReader buffReader = new BufferedReader(reader);
-        String strTmp = "";
+//        String filePath = bookRepository.findByBookId(bookId).getBookUri();
+//        System.out.println(filePath);
+//        FileInputStream fin = new FileInputStream(filePath);
+//        InputStreamReader reader = new InputStreamReader(fin);
+//        BufferedReader buffReader = new BufferedReader(reader);
+//        String strTmp = "";
+//
+//        StringBuilder bookContent = new StringBuilder();
+//        int TpageNum = 0;
+//        while (((strTmp = buffReader.readLine()) != null)) {
+//            TpageNum++;
+//        }
+//        buffReader.close();
 
-        StringBuilder bookContent = new StringBuilder();
-        int TpageNum = 0;
-        while (((strTmp = buffReader.readLine()) != null)) {
-            TpageNum++;
+        String filePath = bookRepository.findByBookId(bookId).getBookUri();
+        File textFile = new File(filePath);
+        int bytes = (int) textFile.length();
+//        System.out.println(bytes);
+        byte[] content = new byte[(int) textFile.length()];
+        try (FileInputStream fileInputStream = new FileInputStream(textFile)) {
+            fileInputStream.read(content);
+//            System.out.println(new String(content, "UTF-8"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        buffReader.close();
-        return TpageNum;
+        String contents = new String(content, "gbk");
+        System.out.println("contents = " + contents);
+
+        int PAGE_BYTES = 1024*3;
+
+        int num = contents.length();
+        int pages = num/PAGE_BYTES + 1;
+
+        return pages;
     }
 }

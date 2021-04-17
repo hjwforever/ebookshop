@@ -20,7 +20,7 @@ function bookRefresh(newPageNum) {
 }
 
 function contentRefresh(PageNum, bookId) {
-    alert(bookId);
+    alert(PageNum);
     $('#content').load("/books/content/refresh?PageNum=" + PageNum + "&bookId=" + bookId);
 }
 
