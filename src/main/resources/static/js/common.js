@@ -20,6 +20,10 @@ function bookRefresh (newPageNum) {
   $('#bookList').load("/books/refresh?newPageNum="+ newPageNum);
 }
 
+function contentRefresh (newPageNum,bookId) {
+    alert(bookId)
+    $('#content').load("/books/content/refresh?PageNum="+ newPageNum +"&bookId"+bookId);
+}
 
 function bookSearch (searchBookName) {
   alert(searchBookName +"12")

@@ -33,6 +33,7 @@ public class Book implements Serializable {
   private static final long SERIAL_VERSION_UID = 4048798961366546485L;
 
   @Id
+  @Column(name="book_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long bookId;
 
@@ -54,6 +55,7 @@ public class Book implements Serializable {
   @Schema(description = "书籍介绍", example = "这是一本经典之作")
   private String bookIntro;
 
+  @Column(name="book_uri")
   @Schema(description = "书籍 存储位置/链接", example = "/books/1, http://example.com/books/1")
   private String bookUri;
 

@@ -12,6 +12,7 @@ import org.springframework.core.annotation.AliasFor;
 @Schema
 public class BookSearchDto {
   private String bookName;
+  private Long bookId;
   private String authorName;
   private Integer pageNum;
   private Integer pageSize;
