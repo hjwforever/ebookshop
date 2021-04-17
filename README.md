@@ -92,7 +92,7 @@
 
 ## API Doc
 [http://localhost:8081/springdoc/index.html](http://localhost:8081/springdoc/index.html)
-![Online Document](http://rb.gy/mfkhxf)
+![Online Document](https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/17/springdoc.png)
 
 [http://localhost:8081/springdoc/api-docs](http://localhost:8081/springdoc/api-docs)
-![JSON Document](http://rb.gy/4onqpz)
+![JSON Document](https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/17/JsonDocumen.png)
