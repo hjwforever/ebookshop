@@ -1,4 +1,4 @@
-package com.aruoxi.ebookshop.config;
+package com.aruoxi.ebookshop.config.springdoc;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
