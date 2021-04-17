@@ -3,6 +3,7 @@ package com.aruoxi.ebookshop.controller;
 import cn.leancloud.AVFile;
 import com.aruoxi.ebookshop.common.CommonResult;
 import com.aruoxi.ebookshop.controller.dto.BookSearchDto;
+import com.aruoxi.ebookshop.controller.dto.BookUploadDto;
 import com.aruoxi.ebookshop.domain.Book;
 import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.impl.BookServiceImpl;
@@ -185,7 +186,8 @@ public class BookController {
     @PostMapping(value = "/upload")
     @ResponseBody
     public CommonResult upload(HttpServletRequest request,
-                               @RequestParam("file") MultipartFile uploadFile,@RequestBody BookSearchDto bookSearchDto) throws Exception {
+                               @RequestParam("file") MultipartFile uploadFile, @RequestParam("bookName") String bookName, @RequestParam("bookAuthor") String bookAuthor, @RequestParam("price") String price) throws Exception {
+
         // 如果文件不为空，写入上传路径
         if (!uploadFile.isEmpty()) {
 
@@ -217,12 +219,22 @@ public class BookController {
                 String filePath = (file.getAbsolutePath() + "/"+ newName).replace('\\','/');
                 LOG.info("-----------【" + filePath + "】-----------");
 
+                String theBookName = bookName != null ? bookName : file.getName();
+                String theBookAuthor = bookAuthor != null ? bookAuthor : "EBookShop";
+                float theprice = price != null ? Float.valueOf(price) : 0f;
+                LOG.info("theBookName = " + bookName);
+                LOG.info("theBookAuthor = " + bookAuthor);
+                LOG.info("theprice = " + price);
+
                 Book book = new Book();
-                book.setBookName(file.getName());
+                book.setBookName(theBookName);
+                book.setAuthor(theBookAuthor);
+                book.setOriginalPrice(theprice);
+                book.setSellingPrice(theprice - 0.2f >= 0 ? theprice - 0.2f : 0);
                 book.setBookUri(filePath);
                 bookService.save(book);
 
-                return  CommonResult.success(filePath);
+                return  CommonResult.success(book);
             } catch (Exception e) {
                 e.printStackTrace();
             }

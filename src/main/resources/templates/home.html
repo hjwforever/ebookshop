@@ -4,10 +4,10 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" >
 <head th:fragment ="header">
   <title>Home</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta charset ="utf-8" />
-    <meta name="description" content ="" />
-    <meta name ="viewport" content="width = device-width,initial-scale = 1.0,maximum-scale = 1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta charset ="utf-8" />
+  <meta name="description" content ="" />
+  <meta name ="viewport" content="width = device-width,initial-scale = 1.0,maximum-scale = 1.0" />
   <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico" />
   <!-- Font Awesome icons (free version)-->
   <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" crossorigin="anonymous"></script>
@@ -21,37 +21,37 @@
   <script type ="text/javascript" th:src="@{/js/common.js}"></script>
 </head>
 <body id="page-top">
-  <!-- Navigation-->
-  <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
-    <div class="container">
-      <a class="navbar-brand js-scroll-trigger" href="#page-top">E-Book Shop</a>
-      <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        Menu
-        <i class="fas fa-bars"></i>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item mx-0 mx-lg-1"><a data-toggle="modal" data-target="#fileUpload" class="portfolio-item mx-auto nav-link py-3 px-0 px-lg-3 rounded">Upload</a></li>
-          <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#bookList">BookList</a></li>
-          <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#about">About</a></li>
-          <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" th:href="@{/login}">Login</a></li>
-          <li class="btn-group nav-item mx-0 mx-lg-1 text-white" sec:authorize="isAuthenticated()">
-            <button data-toggle="dropdown" class="btn dropdown-toggle text-white nav-link py-3 px-0 px-lg-3 rounded font-weight-bold">Hello, <span  sec:authentication="principal.username"></span></button>
-            <ul class="dropdown-menu">
-              <li>
-                <a href="#">个人信息</a>
-              </li>
-              <li>
-                <a th:href="@{/logout}">Logout</a>
-              </li>
-            </ul>
-          </li>
+<!-- Navigation-->
+<nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand js-scroll-trigger" href="#page-top">E-Book Shop</a>
+    <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item mx-0 mx-lg-1"><a data-toggle="modal" data-target="#fileUpload" class="portfolio-item mx-auto nav-link py-3 px-0 px-lg-3 rounded">Upload</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#bookList">BookList</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="#about">About</a></li>
+        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" th:href="@{/login}">Login</a></li>
+        <li class="btn-group nav-item mx-0 mx-lg-1 text-white" sec:authorize="isAuthenticated()">
+          <button data-toggle="dropdown" class="btn dropdown-toggle text-white nav-link py-3 px-0 px-lg-3 rounded font-weight-bold">Hello, <span  sec:authentication="principal.username"></span></button>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="#">个人信息</a>
+            </li>
+            <li>
+              <a th:href="@{/logout}">Logout</a>
+            </li>
+          </ul>
+        </li>
 
-<!--          <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" th:href="@{/login}" sec:authorize="isAuthenticated()"></a>Login</li>-->
-        </ul>
-      </div>
+        <!--          <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" th:href="@{/login}" sec:authorize="isAuthenticated()"></a>Login</li>-->
+      </ul>
     </div>
-  </nav>
+  </div>
+</nav>
 <div class="portfolio-modal modal fade" id="fileUpload" tabindex="-1" role="dialog" aria-labelledby="fileUploadLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
@@ -68,22 +68,34 @@
                 <div class="divider-custom-icon"><i class="fas fa-file"></i></div>
                 <div class="divider-custom-line"></div>
               </div>
-                <div class="col-lg-12">
-                    <form class="form-horizontal mx-auto" action="/books/upload" enctype="multipart/form-data" method="post">
-                        <div class="col-sm-8 col-md-6 offset-3">
-                          <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
-                          <input placeholder="请选择文件" type="file" name="file"/>
-                        </div>
-                        <div class="col-sm-4 col-md-6 offset-4">
-                          <div class="btn-group btn-group-justified" >
-                            <div class="btn-group" >
-                              <button type="submit" class="btn btn-success" id="submitbtn">
-                                <span class="glyphicon glyphicon-share"></span>&nbsp;文件上传</button>
-                            </div>
-                          </div>
-                        </div>
-                    </form>
-                </div>
+              <div class="col-lg-12">
+                <form class="form-horizontal mx-auto" action="/books/upload" enctype="multipart/form-data" method="post">
+                  <div class="row justify-content-center">
+                    <label class="col-2">书籍名</label>
+                    <input type="text" class="form-control col-8"  name="bookName" placeholder="请输入书籍名">
+                  </div>
+                  <div class="row justify-content-center">
+                    <label class="col-2">作者名</label>
+                    <input type="text" class="form-control col-8" name="bookAuthor" placeholder="请输入作者名">
+                  </div>
+                  <div class="row justify-content-center">
+                    <label class="col-2">价格</label>
+                    <input type="text" class="form-control col-8" name="price" placeholder="请输入价格">
+                  </div>
+                  <div class="row justify-content-center">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                    <input placeholder="请选择文件" type="file" name="file"/>
+                  </div>
+                  <div class="col-sm-4 col-md-6 offset-4">
+                    <div class="btn-group btn-group-justified" >
+                      <div class="btn-group" >
+                        <button type="submit" class="btn btn-success" id="submitbtn">
+                          <span class="glyphicon glyphicon-share"></span>&nbsp;提交</button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
               <br/><br/>
               <button class="btn btn-primary" data-dismiss="modal">
                 <i class="fas fa-times fa-fw"></i>
@@ -96,128 +108,128 @@
     </div>
   </div>
 </div>
-  <br/><br/><br/><br/><br/><br/><br/>
-  <div>
-    <!--  !!! 书籍搜索 -->
-    <!--              <div class="row">-->
-    <!--                <div class="span12 offset-4">-->
-    <!--                  <input class="input-medium search-query" id="bookSearchText" type="text" name="bookName" th:value="${searchBookName}" />-->
-    <!--                  <button class="btn btn-info" id="bookSearch" onclick="bookSearch();">查找</button>-->
-    <!--                  <script type ="text/javascript" th:src="@{/js/common.js}"></script>-->
-    <!--                </div>-->
-    <!--              </div>-->
-    <!-- !!! !!! 特别注意 所有将要刷新的数据 需要被包在下面这个 含有 th:fragment="bookList" 的div块中, 否则数据无法被更新 -->
-    <div id="bookList" th:fragment="bookList">
-      <div class="case-container">
-        <div class="case-index-content">
-          <ul class="clearfix">
-            <!-- !!! memberEntry 表示循环中的每一条数据(每一本书) -->
-            <!-- !!! memberStat 表示循环中的每一条数据(每一本书) 的在循环中的相关状态属性
-                     如 count 表示循环从1开始计数的值， index 表示循环从0开始计数的值
-                      even 是否为偶数 ,  odd 是否为奇数 , current 指向该Java对象-->
-            <li class="case-example-item" th:each="memberEntry,memberStat:${books}">
-              <img th:src="${memberEntry.getBookCoverImg()}" alt="" class="case-pad">
-              <div class="case-item-info">
-                <div class="case-info-logo">
+<br/><br/><br/><br/><br/><br/><br/>
+<div>
+  <!--  !!! 书籍搜索 -->
+  <!--              <div class="row">-->
+  <!--                <div class="span12 offset-4">-->
+  <!--                  <input class="input-medium search-query" id="bookSearchText" type="text" name="bookName" th:value="${searchBookName}" />-->
+  <!--                  <button class="btn btn-info" id="bookSearch" onclick="bookSearch();">查找</button>-->
+  <!--                  <script type ="text/javascript" th:src="@{/js/common.js}"></script>-->
+  <!--                </div>-->
+  <!--              </div>-->
+  <!-- !!! !!! 特别注意 所有将要刷新的数据 需要被包在下面这个 含有 th:fragment="bookList" 的div块中, 否则数据无法被更新 -->
+  <div id="bookList" th:fragment="bookList">
+    <div class="case-container">
+      <div class="case-index-content">
+        <ul class="clearfix">
+          <!-- !!! memberEntry 表示循环中的每一条数据(每一本书) -->
+          <!-- !!! memberStat 表示循环中的每一条数据(每一本书) 的在循环中的相关状态属性
+                   如 count 表示循环从1开始计数的值， index 表示循环从0开始计数的值
+                    even 是否为偶数 ,  odd 是否为奇数 , current 指向该Java对象-->
+          <li class="case-example-item" th:each="memberEntry,memberStat:${books}">
+            <img th:src="${memberEntry.getBookCoverImg()}" alt="" class="case-pad">
+            <div class="case-item-info">
+              <div class="case-info-logo">
 
-                  <div class="case-info-bookSellStatus">
-                    <span class="label label-danger badge-danger">[[${memberEntry.bookSellStatus}]]</span></div>
-                </div>
-                <div class="case-info-title" th:text="${memberEntry.getBookName()}"></div>
-                <div class="case-info-author" th:text="${memberEntry.getAuthor()}"></div>
-                <div class="case-info-price">
-                  <div class="price">现价:</div><div class="case-info-sellingPrice" th:text="${memberEntry.getSellingPrice()}"></div>
-                  <div class="price">原价:</div><div class="case-info-originalPrice" th:text="${memberEntry.getOriginalPrice()}"></div>
-                </div>
-                <div class="introduction">内容简介</div>
-                <button sec:authorize="hasRole('USER')" class="btn btn-success" th:onclick="bookDownload([[${memberEntry.bookId}]])">
-                  <span class="glyphicon glyphicon-share"></span>&nbsp;文件下载</button>
-                <textarea class="case-info-bookIntro" rows="8" disabled="disabled" readonly="readonly" th:text="${memberEntry.bookIntro}"></textarea>
+                <div class="case-info-bookSellStatus">
+                  <span class="label label-danger badge-danger">[[${memberEntry.bookSellStatus}]]</span></div>
               </div>
-            </li>
-          </ul>
-        </div>
+              <div class="case-info-title" th:text="${memberEntry.getBookName()}"></div>
+              <div class="case-info-author" th:text="${memberEntry.getAuthor()}"></div>
+              <div class="case-info-price">
+                <div class="price">现价:</div><div class="case-info-sellingPrice" th:text="${memberEntry.getSellingPrice()}"></div>
+                <div class="price">原价:</div><div class="case-info-originalPrice" th:text="${memberEntry.getOriginalPrice()}"></div>
+              </div>
+              <div class="introduction">内容简介</div>
+              <button sec:authorize="hasRole('USER')" class="btn btn-success" th:onclick="bookDownload([[${memberEntry.bookId}]])">
+                <span class="glyphicon glyphicon-share"></span>&nbsp;文件下载</button>
+              <textarea class="case-info-bookIntro" rows="8" disabled="disabled" readonly="readonly" th:text="${memberEntry.bookIntro}"></textarea>
+            </div>
+          </li>
+        </ul>
       </div>
+    </div>
 
-      <div class="btn-Pre-or-Next">
-        <!-- !!! 上一页下一页按钮 bookRefresh函数可在 static/js/common.js 中找到 -->
-        <nobr>
-          <div class="container">
-            <div class="row clearfix">
-              <div class="col-md-6 col-md-offset-4 col-lg-offset-4 col-xl-offset-4">
-                <ul class="pagination justify-content-around">
-                  <li>
-                    <button th:disabled="!${hasPre}" id="book_refresh_pre" th:onclick="bookRefresh([[${pageNum-1}]]);" type="button" class="btn btn-success">
-                      上一页</button>
-                  </li>
-                  <li th:each="page,pageStat:${totalPages}">
-                    <button th:onclick="bookRefresh([[${page.value}]])" class="btn btn-small btn-outline-success">[[${page.value}]]</button>
-                  </li>
-                  <li>
-                    <button th:disabled="!${hasNext}" id="book_refresh_next" th:onclick="bookRefresh([[${pageNum+1}]]);" type="button" class="btn btn-success" >
-                      下一页</button>
-                  </li>
-                </ul>
-              </div>
+    <div class="btn-Pre-or-Next">
+      <!-- !!! 上一页下一页按钮 bookRefresh函数可在 static/js/common.js 中找到 -->
+      <nobr>
+        <div class="container">
+          <div class="row clearfix">
+            <div class="col-md-6 col-md-offset-4 col-lg-offset-4 col-xl-offset-4">
+              <ul class="pagination justify-content-around">
+                <li>
+                  <button th:disabled="!${hasPre}" id="book_refresh_pre" th:onclick="bookRefresh([[${pageNum-1}]]);" type="button" class="btn btn-success">
+                    上一页</button>
+                </li>
+                <li th:each="page,pageStat:${totalPages}">
+                  <button th:onclick="bookRefresh([[${page.value}]])" class="btn btn-small btn-outline-success">[[${page.value}]]</button>
+                </li>
+                <li>
+                  <button th:disabled="!${hasNext}" id="book_refresh_next" th:onclick="bookRefresh([[${pageNum+1}]]);" type="button" class="btn btn-success" >
+                    下一页</button>
+                </li>
+              </ul>
             </div>
           </div>
-        </nobr>
-      </div>
+        </div>
+      </nobr>
     </div>
   </div>
-  <!-- Masthead-->
-  <header class="masthead bg-primary text-white text-center">
-    <div class="container d-flex align-items-center flex-column">
-      <!-- Masthead Avatar Image-->
-      <img class="masthead-avatar mb-5" th:src="@{/assets/img/avataaars.svg}" alt="" />
-      <!-- Masthead Heading-->
-      <h1 class="masthead-heading text-uppercase mb-0">E-Book Shop</h1>
-      <!-- Icon Divider-->
-      <div class="divider-custom divider-light">
-        <div class="divider-custom-line"></div>
-        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-        <div class="divider-custom-line"></div>
-      </div>
-      <!-- Masthead Subheading-->
-      <p class="masthead-subheading font-weight-light mb-0">DS CFX HJW</p>
+</div>
+<!-- Masthead-->
+<header class="masthead bg-primary text-white text-center">
+  <div class="container d-flex align-items-center flex-column">
+    <!-- Masthead Avatar Image-->
+    <img class="masthead-avatar mb-5" th:src="@{/assets/img/avataaars.svg}" alt="" />
+    <!-- Masthead Heading-->
+    <h1 class="masthead-heading text-uppercase mb-0">E-Book Shop</h1>
+    <!-- Icon Divider-->
+    <div class="divider-custom divider-light">
+      <div class="divider-custom-line"></div>
+      <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+      <div class="divider-custom-line"></div>
     </div>
-  </header>
+    <!-- Masthead Subheading-->
+    <p class="masthead-subheading font-weight-light mb-0">DS CFX HJW</p>
+  </div>
+</header>
 
-  <!-- About Section-->
-  <section class="page-section bg-primary text-white mb-0" id="about">
-    <div class="container">
-      <!-- About Section Heading-->
-      <h2 class="page-section-heading text-center text-uppercase text-white">About</h2>
-      <!-- Icon Divider-->
-      <div class="divider-custom divider-light">
-        <div class="divider-custom-line"></div>
-        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-        <div class="divider-custom-line"></div>
-      </div>
-      <!-- About Section Content-->
-      <div class="row">
-        <div class="col-lg-4 ml-auto"><p class="lead">这里是E-Book Shop开发小组，组员名单：黄俊雯，邓硕，陈付鑫</p></div>
-        <div class="col-lg-4 mr-auto"><p class="lead">在本在线书店中，可以在线观看或下载观看电子书</p></div>
-      </div>
+<!-- About Section-->
+<section class="page-section bg-primary text-white mb-0" id="about">
+  <div class="container">
+    <!-- About Section Heading-->
+    <h2 class="page-section-heading text-center text-uppercase text-white">About</h2>
+    <!-- Icon Divider-->
+    <div class="divider-custom divider-light">
+      <div class="divider-custom-line"></div>
+      <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+      <div class="divider-custom-line"></div>
     </div>
-  </section>
-  <!-- Copyright Section-->
-  <div class="copyright py-4 text-center text-white">
-    <div class="container"><small>Copyright © E-Book Shop 2020-2021</small></div>
+    <!-- About Section Content-->
+    <div class="row">
+      <div class="col-lg-4 ml-auto"><p class="lead">这里是E-Book Shop开发小组，组员名单：黄俊雯，邓硕，陈付鑫</p></div>
+      <div class="col-lg-4 mr-auto"><p class="lead">在本在线书店中，可以在线观看或下载观看电子书</p></div>
+    </div>
   </div>
-  <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes)-->
-  <div class="scroll-to-top d-lg-none position-fixed">
-    <a class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top"><i class="fa fa-chevron-up"></i></a>
-  </div>
-  <!-- Bootstrap core JS-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Third party plugin JS-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
-  <!-- Contact form JS-->
-  <script th:src="@{/assets/mail/jqBootstrapValidation.js}"></script>
-  <script th:src="@{/assets/mail/contact_me.js}"></script>
-  <!-- Core theme JS-->
-  <script src="js/scripts.js"></script>
-  </body>
+</section>
+<!-- Copyright Section-->
+<div class="copyright py-4 text-center text-white">
+  <div class="container"><small>Copyright © E-Book Shop 2020-2021</small></div>
+</div>
+<!-- Scroll to Top Button (Only visible on small and extra-small screen sizes)-->
+<div class="scroll-to-top d-lg-none position-fixed">
+  <a class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top"><i class="fa fa-chevron-up"></i></a>
+</div>
+<!-- Bootstrap core JS-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Third party plugin JS-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+<!-- Contact form JS-->
+<script th:src="@{/assets/mail/jqBootstrapValidation.js}"></script>
+<script th:src="@{/assets/mail/contact_me.js}"></script>
+<!-- Core theme JS-->
+<script src="js/scripts.js"></script>
+</body>
 </html>
