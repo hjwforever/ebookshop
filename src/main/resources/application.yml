@@ -78,7 +78,7 @@ spring:
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: always
- Alibaba Druid connector pool
+# Alibaba Druid connector pool
     druid:
       initial-size: 10
       max-active: 50
