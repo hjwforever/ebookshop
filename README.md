@@ -5,7 +5,15 @@
     - [基本功能](#基本功能)
     - [进阶功能](#进阶功能)
     - [集成功能](#集成功能)
-
+  - [Unit Test](#unit-test)
+    - [Repository Test](#repository-test)
+      - [新建并保存书籍](#新建并保存书籍)
+      - [根据id删除书籍](#根据id删除书籍)
+      - [根据id修改书籍](#根据id修改书籍)
+      - [根据 book_name 模糊查找所有相关书籍](#根据-book_name-模糊查找所有相关书籍)
+    - [Controller Test](#controller-test)
+      - [用户注册](#用户注册)
+      - 其他功能可查看功能文档或运行项目，不好展示...
 
 # E-Book Shop
 > E-BookShop Project for Spring Boot with Spring Security, Alibaba Druid,  Thymeleaf, MySQL, Springdoc
@@ -96,12 +104,6 @@
 [http://localhost:8081/springdoc/api-docs](http://localhost:8081/springdoc/api-docs)
 ![JSON Document](https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/17/JsonDocumen.png)
 
-
-- [E-Book Shop 功能文档](#e-book-shop-功能文档)
-  - [基本功能](#基本功能)
-  - [进阶功能](#进阶功能)
-  - [集成功能](#集成功能)
-
 ## E-Book Shop 功能文档
 > 详情可看**附件设计文档**或**项目在线接口文档**
 ### 基本功能
@@ -145,3 +147,39 @@
   ![JSON Document](https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/17/JsonDocumen.png)
 4. 音乐播放器
    ![2021/04/17/music](https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/17/music.png)
+
+
+## Unit Test
+
+### Repository Test
+
+#### 新建并保存书籍
+![2021/04/18/save](https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/18/save.png)
+
+#### 根据id删除书籍
+ - 根据id删除书籍
+ ![2021/04/18/deleteTest](https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/18/deleteTest.png)
+ - **删除前**  数据库-ebooks-#1书籍**存在**
+![2021/04/18/delete](https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/18/delete.png)
+ - **删除后** 数据库-ebooks-#1书籍**不存在**
+ ![2021/04/18/afterDelete](https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/18/afterDelete.png)
+
+#### 根据id修改书籍
+![2021/04/18/update](https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/18/update.png)
+
+#### 根据 book_name 模糊查找所有相关书籍
+![2021/04/18/findNameLike](https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/18/findNameLike.png)
+
+### Controller Test
+
+#### 用户注册
+  - register Test
+  ![2021/04/18/registerTest](https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/18/registerTest.png)
+
+  - **注册前**的数据库用户列表
+
+  ![2021/04/18/beforeRegister](https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/18/beforeRegister.png)
+
+  - **注册后**的数据库用户列表
+
+  ![2021/04/18/afterRegister](https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/2021/04/18/afterRegister.png)
