@@ -5,6 +5,7 @@ import com.aruoxi.ebookshop.controller.dto.BookSearchDto;
 import com.aruoxi.ebookshop.domain.Book;
 import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.impl.BookServiceImpl;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -88,13 +89,16 @@ public class RestBookController {
 
     @ResponseBody
     @RequestMapping(value = "/downloadUrl")
+    @Hidden
     public CommonResult download(HttpServletRequest request,
                                  @RequestHeader("User-Agent") String userAgent,
                                  @RequestParam("bookId") Long bookId) throws Exception {
         return getBookUrl(bookId, bookRepository);
     }
 
-
+    @Operation(summary = "书籍分页内容",
+        description = "根据搜索条件返回相应的书籍分页内容",
+        security = @SecurityRequirement(name = "需要登录"))
     @GetMapping(value = "/content")
     public CommonResult<String> findContent(BookSearchDto search) throws IOException {
         int pageNum = search.getPageNum();

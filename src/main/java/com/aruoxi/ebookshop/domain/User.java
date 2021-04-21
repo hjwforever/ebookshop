@@ -22,9 +22,12 @@ public class User {
     @Schema(description = "用户id", required = true)
     private Long id;
 
-    @Column(name = "user_name")
-    @Schema(description = "用户名字",example = "张三", required = true)
+    @Column(unique = true)
+    @Schema(description = "用户名",example = "zhangsan", required = true)
     private String username;
+
+    @Schema(description = "用户昵称",example = "张三")
+    private String nickname;
 
     @Schema(description = "用户邮箱",example = "test@qq.com", required = true)
     private String email;
@@ -47,25 +50,24 @@ public class User {
 
     public User(String username, String email, String password) {
         this.username = username;
+        this.nickname = username;
         this.email = email;
         this.password = password;
     }
 
     public User(String username, String email, String password, Collection<Role> roles) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
+        this(username, email, password);
         this.roles = roles;
     }
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + "*********" + '\'' +
-                ", roles=" + roles +
-                '}';
+        return "{id:" + id +
+                ", username:" + username +
+                ", nickname:" + nickname +
+                ", email:" + email +
+                ", password:" + "*********" +
+                ", roles:" + roles.stream().map(Role::getName) +
+                "}";
     }
 }

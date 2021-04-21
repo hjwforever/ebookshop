@@ -29,6 +29,10 @@ public class CommonResult<T> {
         return new CommonResult<T>(code, msg, data);
     }
 
+    public static <T> CommonResult<T> success(HttpStatus status, String msg, T data) {
+        return new CommonResult<T>(status.value(), msg, data);
+    }
+
     public static <T> CommonResult<T> fail(Integer code, String msg) {
         return new CommonResult<T>(code, msg, null);
     }

@@ -107,7 +107,7 @@ class EbookshopApplicationTests {
 
 		HttpEntity formEntity = new HttpEntity(param, headers);
 
-		String result = client.postForObject("http://localhost:8081/api/register", formEntity, String.class);
+		String result = client.postForObject("http://localhost:8081/api/auth/register", formEntity, String.class);
 		LOG.info("result: " + result);
 	}
 

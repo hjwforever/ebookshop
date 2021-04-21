@@ -22,15 +22,13 @@ import javax.annotation.Resource;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
-
     @Resource
     private UserRepository userRepository;
-
     @Resource
     private BCryptPasswordEncoder passwordEncoder;
-
     @Resource
     private RoleServiceImpl roleService;
 
@@ -44,10 +42,15 @@ public class UserServiceImpl implements UserService {
         Set<Role> roles = new HashSet<>();
         Set<String> strRoles = registration.getRoles();
         String email = registration.getEmail();
+        String username = registration.getUsername();
 
         if (userRepository.findByEmail(email).isPresent()) {
             //  throw new ValidationException("Email exists!");
-//              LOG.info("Email exists!");
+            return null;
+        }
+
+        if (userRepository.findByUsername(username).isPresent()) {
+            //  throw new ValidationException("Username exists!");
             return null;
         }
 
@@ -64,7 +67,13 @@ public class UserServiceImpl implements UserService {
                 Role _role = roleService.findByName(role);
                 roles.add(_role);
             });
-        user.setRoles(roles.isEmpty() ?
+        log.info("roles = " + roles);
+
+        log.info("roles Size = " + roles.size());
+        log.info("roles Size = " + roles.stream().count());
+        log.info("roles Size filter = " + roles.stream().filter(Objects::nonNull));
+        log.info("roles Size filter count = " + roles.stream().filter(Objects::nonNull).count());
+        user.setRoles(roles.stream().noneMatch(Objects::nonNull) ?
             Collections.singletonList(roleService.findByName("ROLE_USER"))
             : roles);
         return userRepository.save(user);
