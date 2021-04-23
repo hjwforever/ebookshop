@@ -5,6 +5,7 @@ import com.aruoxi.ebookshop.controller.restController.dto.JwtResponse;
 import com.aruoxi.ebookshop.common.JwtUtils;
 import com.aruoxi.ebookshop.controller.restController.dto.LoginRequest;
 import com.aruoxi.ebookshop.controller.restController.dto.RestRegistrationDto;
+import com.aruoxi.ebookshop.controller.restController.dto.UserInfo;
 import com.aruoxi.ebookshop.domain.User;
 import com.aruoxi.ebookshop.repository.UserRepository;
 import com.aruoxi.ebookshop.service.impl.UserDetailsImpl;
@@ -85,7 +86,7 @@ public class AuthController {
 					userDetails.getEmail(),
 					roles));
 		} catch (BadCredentialsException exception) {
-			return CommonResult.fail(HttpStatus.BAD_REQUEST,exception.getMessage());
+			return CommonResult.fail(HttpStatus.BAD_REQUEST,"用户名或密码错误");
 		}
 	}
 
@@ -117,9 +118,9 @@ public class AuthController {
 			return CommonResult.fail(HttpStatus.BAD_REQUEST,"Error: the user already exists!");
 		}
 
-		RestRegistrationDto dto = new RestRegistrationDto(user);
-		log.info("dto = " + dto);
-		return CommonResult.success("User registered successfully!", dto);
+		UserInfo userInfo = new UserInfo(user);
+		log.info("UserInfo = " + userInfo);
+		return CommonResult.success("User registered successfully!", userInfo);
 	}
 
 }

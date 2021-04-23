@@ -87,6 +87,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/webjars/**",
                 "/api/auth/**",
                 "/api/books/**",
+                "/api/user/**",
                 "/druid/**",
                 "/swagger-ui/**",
                 "/springdoc/**",

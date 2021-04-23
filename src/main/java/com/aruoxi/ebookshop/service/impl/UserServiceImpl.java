@@ -3,6 +3,7 @@ package com.aruoxi.ebookshop.service.impl;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.aruoxi.ebookshop.common.RegexUtil;
 import com.aruoxi.ebookshop.controller.dto.RegistrationDto;
 import com.aruoxi.ebookshop.controller.restController.dto.RestRegistrationDto;
 import com.aruoxi.ebookshop.domain.Role;
@@ -31,10 +32,25 @@ public class UserServiceImpl implements UserService {
     private BCryptPasswordEncoder passwordEncoder;
     @Resource
     private RoleServiceImpl roleService;
+    @Resource
+    RegexUtil regexUtil;
+
+    @Override
+    public User findUser(String usernameOrEmail) {
+        Optional<User> user = regexUtil.isEmail(usernameOrEmail) ?
+            userRepository.findByEmail(usernameOrEmail) :
+            userRepository.findByUsername(usernameOrEmail);
+        return user.orElse(null);
+    }
 
     @Override
     public User findByEmail(String email){
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByEmail(username).orElse(null);
     }
 
     @Override
@@ -58,21 +74,13 @@ public class UserServiceImpl implements UserService {
             strRoles.add("ROLE_USER");
         }
 
-        User user = new User();
-        user.setUsername(registration.getUsername());
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(registration.getPassword()));
+        User user = new User(registration.getUsername(),email,passwordEncoder.encode(registration.getPassword()));
 
         strRoles.forEach(role -> {
                 Role _role = roleService.findByName(role);
                 roles.add(_role);
             });
         log.info("roles = " + roles);
-
-        log.info("roles Size = " + roles.size());
-        log.info("roles Size = " + roles.stream().count());
-        log.info("roles Size filter = " + roles.stream().filter(Objects::nonNull));
-        log.info("roles Size filter count = " + roles.stream().filter(Objects::nonNull).count());
         user.setRoles(roles.stream().noneMatch(Objects::nonNull) ?
             Collections.singletonList(roleService.findByName("ROLE_USER"))
             : roles);

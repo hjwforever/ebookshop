@@ -35,6 +35,12 @@ public class User {
     @Schema(description = "用户密码", required = true)
     private String password;
 
+    @Schema(description = "用户头像", defaultValue = "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif")
+    private String avatar;
+
+    @Schema(description = "用户简介")
+    private String introduction;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "users_roles",
@@ -46,6 +52,8 @@ public class User {
     private Collection<Role> roles;
 
     public User() {
+        this.avatar = "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif";
+        this.introduction = "";
     }
 
     public User(String username, String email, String password) {
@@ -53,6 +61,8 @@ public class User {
         this.nickname = username;
         this.email = email;
         this.password = password;
+        this.avatar = "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif";
+        this.introduction = "";
     }
 
     public User(String username, String email, String password, Collection<Role> roles) {
