@@ -55,8 +55,12 @@ public class Book implements Serializable {
   private String bookIntro;
 
   @Column(name="book_uri")
-  @Schema(description = "书籍 存储位置/链接", example = "/books/1, http://example.com/books/1")
+  @Schema(description = "书籍 存储位置", example = "/books/1")
   private String bookUri;
+
+  @Column(name="book_url")
+  @Schema(description = "书籍 链接", example = "http://example.com/books/1")
+  private String bookUrl;
 
   @Schema(description = "书籍封面图片", example = "http://example.com/books/1/CoverImg")
   private String bookCoverImg;
@@ -91,9 +95,15 @@ public class Book implements Serializable {
     this.originalPrice = 0f;
     this.sellingPrice = 0f;
     this.bookSellStatus = "热销";
+    this.bookCoverImg = "https://cdn.jsdelivr.net/gh/hjwforever/images@main/img/defaultCoverImg.png";
+    this.bookCategoryId = 1L;
+    this.tag = "经典好书";
+    this.author = "E-Book Shop";
+    this.bookIntro = "暂无介绍";
   }
 
   public Book(Long bookId, @NotBlank @Size(max = 100) String bookName, @Min(value = 0) @Max(value = 5) Float starts, @Size(max = 100) String author, @Size(max = 200) String bookIntro, String bookUri, String bookCoverImg, Float originalPrice, Float sellingPrice, Long bookCategoryId, String tag, String bookSellStatus, Date createTime, Date updateTime) {
+    this();
     this.bookId = bookId;
     this.bookName = bookName;
     this.starts = starts;

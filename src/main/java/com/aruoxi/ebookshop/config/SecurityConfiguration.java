@@ -12,7 +12,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,15 +24,20 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import javax.annotation.Resource;
 
 @Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(
+    // securedEnabled = true,
+    // jsr250Enabled = true,
+    prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Resource
     private UserService userService;
 
-    @Autowired
+    @Resource
     UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
+    @Resource
     private AuthEntryPointJwt unauthorizedHandler;
 
     @Bean
@@ -59,13 +66,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
-        auth.setUserDetailsService(userService);
-        auth.setPasswordEncoder(passwordEncoder());
-        return auth;
-    }
+//    @Bean
+//    public DaoAuthenticationProvider authenticationProvider(){
+//        DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
+//        auth.setUserDetailsService(userService);
+//        auth.setPasswordEncoder(passwordEncoder());
+//        return auth;
+//    }
 
     //    @Override
 //    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -85,9 +92,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "/img/**",
                 "/uploadFile/**",
                 "/webjars/**",
-                "/api/auth/**",
-                "/api/books/**",
-                "/api/user/**",
+                "/api/**",
+//                "/api/auth/**",
+//                "/api/books/**",
+//                "/api/user/**",
+//                "/api/test/**",
                 "/druid/**",
                 "/swagger-ui/**",
                 "/springdoc/**",
@@ -103,14 +112,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .loginPage("/login")
             .failureForwardUrl("/books")
             .successForwardUrl("/books")
-            .permitAll()
+//            .permitAll()
             .and()
             .logout()
             .invalidateHttpSession(true)
             .clearAuthentication(true)
             .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
             .logoutSuccessUrl("/books")
-            .permitAll()
+//            .permitAll()
+            .and()
+            .cors()
             .and()
             .csrf().disable()
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler);

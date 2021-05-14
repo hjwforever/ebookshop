@@ -295,9 +295,7 @@ public class BookController {
     public static CommonResult getBookUrl(@RequestParam("bookId") Long bookId, BookRepository bookRepository) {
         Book book = bookRepository.findById(bookId).orElse(null);
         if (book != null) {
-            HashMap<Object, Object> map = new HashMap<>();
-            map.put("url",book.getBookUri());
-            return CommonResult.success(map);
+            return CommonResult.success(book.getBookUrl());
         }
         return CommonResult.fail(HttpStatus.NOT_FOUND,HttpStatus.NOT_FOUND.getReasonPhrase());
     }

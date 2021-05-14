@@ -29,6 +29,7 @@ CREATE TABLE `ebooks`  (
   `book_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `book_sell_status` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '',
   `book_uri` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `book_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `create_time` datetime(0) NULL DEFAULT NULL,
   `original_price` float NULL DEFAULT NULL,
   `selling_price` float NULL DEFAULT NULL,
@@ -46,6 +47,21 @@ DROP TABLE IF EXISTS `hibernate_sequence`;
 CREATE TABLE `hibernate_sequence`  (
   `next_val` bigint NULL DEFAULT NULL
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for refreshtoken
+-- ----------------------------
+DROP TABLE IF EXISTS `refreshtoken`;
+CREATE TABLE `refreshtoken`  (
+                               `id` bigint NOT NULL,
+                               `expiry_date` datetime(0) NOT NULL,
+                               `token` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+                               `user_id` bigint NULL DEFAULT NULL,
+                               PRIMARY KEY (`id`) USING BTREE,
+                               UNIQUE INDEX `UK_or156wbneyk8noo4jstv55ii3`(`token`) USING BTREE,
+                               INDEX `FKa652xrdji49m4isx38pp4p80p`(`user_id`) USING BTREE,
+                               CONSTRAINT `FKa652xrdji49m4isx38pp4p80p` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for roles

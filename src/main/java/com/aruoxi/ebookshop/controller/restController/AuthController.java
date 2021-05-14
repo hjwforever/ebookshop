@@ -1,13 +1,13 @@
 package com.aruoxi.ebookshop.controller.restController;
 
 import com.aruoxi.ebookshop.common.CommonResult;
-import com.aruoxi.ebookshop.controller.restController.dto.JwtResponse;
+import com.aruoxi.ebookshop.controller.restController.dto.*;
 import com.aruoxi.ebookshop.common.JwtUtils;
-import com.aruoxi.ebookshop.controller.restController.dto.LoginRequest;
-import com.aruoxi.ebookshop.controller.restController.dto.RestRegistrationDto;
-import com.aruoxi.ebookshop.controller.restController.dto.UserInfo;
+import com.aruoxi.ebookshop.domain.RefreshToken;
 import com.aruoxi.ebookshop.domain.User;
+import com.aruoxi.ebookshop.exception.TokenRefreshException;
 import com.aruoxi.ebookshop.repository.UserRepository;
+import com.aruoxi.ebookshop.service.impl.RefreshTokenService;
 import com.aruoxi.ebookshop.service.impl.UserDetailsImpl;
 import com.aruoxi.ebookshop.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +20,7 @@ import org.apache.catalina.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,16 +43,14 @@ import java.util.stream.Collectors;
 public class AuthController {
 
 	private static final Logger log = LoggerFactory.getLogger(AuthController.class);
-
 	@Resource
 	AuthenticationManager authenticationManager;
-
 	@Resource
 	UserRepository userRepository;
-
 	@Resource
 	UserServiceImpl userService;
-
+	@Resource
+	RefreshTokenService refreshTokenService;
 	@Resource
 	JwtUtils jwtUtils;
 
@@ -73,14 +72,16 @@ public class AuthController {
 					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-			String jwt = jwtUtils.generateJwtToken(authentication);
-
 			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+			String jwt = jwtUtils.generateJwtToken(userDetails);
+
 			List<String> roles = userDetails.getAuthorities().stream()
 					.map(GrantedAuthority::getAuthority)
 					.collect(Collectors.toList());
 
-			return CommonResult.success("login successfully!", new JwtResponse(jwt,
+			RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+
+			return CommonResult.success("login successfully!", new JwtResponse(jwt,refreshToken.getToken(),
 					userDetails.getId(),
 					userDetails.getUsername(),
 					userDetails.getEmail(),
@@ -123,5 +124,19 @@ public class AuthController {
 		return CommonResult.success("User registered successfully!", userInfo);
 	}
 
-}
+	@PostMapping("/refreshtoken")
+	public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
+		String requestRefreshToken = request.getRefreshToken();
 
+		return refreshTokenService.findByToken(requestRefreshToken)
+				.map(refreshTokenService::verifyExpiration)
+				.map(RefreshToken::getUser)
+				.map(user -> {
+					String token = jwtUtils.generateTokenFromUsername(user.getUsername());
+					return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+				})
+				.orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
+						"Refresh token is not in database!"));
+	}
+
+}

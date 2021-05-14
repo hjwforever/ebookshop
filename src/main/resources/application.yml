@@ -14,6 +14,7 @@ ebookshop:
   app:
     jwtSecret: ebookshop_security_ddd
     jwtExpirationMs: 86400000
+    jwtRefreshExpirationMs: 604800000
 
 # ===== SpringDoc配置 =====#
 springdoc:
@@ -40,6 +41,11 @@ swagger:
 spring:
   application:
     name: E-Book Shop
+  servlet:
+    ## 上传文件大小设置
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
   ## Thymeleaf
   thymeleaf:
     cache: false

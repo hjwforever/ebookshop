@@ -14,12 +14,12 @@ import lombok.Data;
 @Hidden
 public class BookUploadDto {
   private String bookName;
-  private String authorName;
+  private String author;
   private Float price;
 
-  public BookUploadDto(String bookName, String authorName, Float price) {
+  public BookUploadDto(String bookName, String author, Float price) {
     this.bookName = bookName != null ? bookName : "未知";
-    this.authorName = authorName != null ? authorName : "ebookshop";
-    this.price = price != null && price >= 0 ? price : 10;
+    this.author = author != null ? author : "ebookshop";
+    this.price = price != null && price >= 0 ? price : 0;
   }
 }
