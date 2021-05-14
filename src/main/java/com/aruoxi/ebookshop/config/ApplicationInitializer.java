@@ -33,7 +33,7 @@ public class ApplicationInitializer implements ApplicationListener<ApplicationRe
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-        AVOSCloud.setLogLevel(AVLogger.Level.DEBUG);
+//        AVOSCloud.setLogLevel(AVLogger.Level.DEBUG);
         AVOSCloud.initialize(myProps.getAppId(), myProps.getAppKey());
 //        AVFile file = new AVFile("resume.txt", "LeanCloud".getBytes());
 //        AVFile file = new AVFile("resume.txt", "LeanCloud".getBytes());
