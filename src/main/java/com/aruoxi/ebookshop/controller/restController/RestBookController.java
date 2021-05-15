@@ -7,6 +7,7 @@ import com.aruoxi.ebookshop.controller.dto.BookUploadDto;
 import com.aruoxi.ebookshop.domain.Book;
 import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.impl.BookServiceImpl;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -51,9 +52,7 @@ public class RestBookController {
 
     @Value("${ebookshop.file.filePrefix}")
     private String filePrefix;
-
     private static final Logger log = LoggerFactory.getLogger(RestBookController.class);
-
     private static final Logger LOG = LoggerFactory.getLogger(RestBookController.class);
     @Resource
     private BookServiceImpl bookService;
@@ -90,24 +89,30 @@ public class RestBookController {
     // 上传文件会自动绑定到MultipartFile中
     @PostMapping(value = "/upload")
     @ResponseBody
-    public CommonResult upload(HttpServletRequest request,MultipartFile uploadFile,
-//        , @RequestParam(value = "bookName", required = false) String bookName, @RequestParam(value = "bookAuthor", required = false) String bookAuthor,
+    public CommonResult upload(HttpServletRequest request, MultipartFile uploadFile,
+//        , @RequestParam(value = "bookName", required = false) String bookName, @RequestParam(value = "bookAuthor", required = false) String bookAuthor, @RequestBody JSONPObject jsonpObject
                                BookUploadDto uploadBookInfo) throws Exception {
+//        log.info("jsonpObject = " + jsonpObject);
+
         // 如果文件不为空，写入上传路径
         if (!uploadFile.isEmpty()) {
+            // 获取资源目录
+
+//            String uploadFilePath = this.getServletContext().getRealPath("/WEB-INF/upload");
+//            log.info("uploadFilePath = " + uploadFilePath);
             String bookName = uploadBookInfo.getBookName();
             String bookAuthor = uploadBookInfo.getAuthor();
             Float price = uploadBookInfo.getPrice();
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
             //构建文件上传所要保存的"文件夹路径"--这里是相对路径，保存到项目根路径的文件夹下
-            String realPath = new String("src/main/resources/" + filePrefix);
+            String realPath = "src/main/resources/" + filePrefix;
             LOG.info("-----------上传文件保存的路径【" + realPath + "】-----------");
             String format = sdf.format(new Date());
             //存放上传文件的文件夹
             File file = new File(realPath + format);
             LOG.info("-----------存放上传文件的文件夹【" + file + "】-----------");
-            LOG.info("-----------输出文件夹绝对路径 -- 这里的绝对路径是相当于当前项目的路径而不是“容器”路径【" + file.getAbsolutePath() + "】-----------");
+            LOG.info("-----------输出文件夹绝对路径 -- 这里的绝对路径是相当于当前项目的路径而不是“容器”路径【" + file.getCanonicalPath() + "】-----------");
             if (!file.isDirectory()) {
                 //递归生成文件夹
                 file.mkdirs();
@@ -119,7 +124,7 @@ public class RestBookController {
             String OriginalFilename = oldName.substring(0, oldName.indexOf('.'));
             LOG.info("-----------文件原始的名字【" + oldName + "】-----------");
             String newName = UUID.randomUUID().toString() + oldName.substring(oldName.lastIndexOf("."),oldName.length());
-            LOG.info("-----------文件要保存后的新名字【" + newName +"】-----------");
+            LOG.info("-----------文件要保存后的新名字【" + newName + "】-----------");
             try {
                 String theBookName = bookName != null ? bookName : OriginalFilename;
                 String theBookAuthor = bookAuthor != null ? bookAuthor : "EBookShop";
@@ -160,7 +165,12 @@ public class RestBookController {
                 //转存文件到指定路径，如果文件名重复的话，将会覆盖掉之前的文件,这里是把文件上传到 “绝对路径”
                 uploadFile.transferTo(newFile);
 //                String filePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/uploadFile/" + format + newName;
-                String filePath = (file.getAbsolutePath() + "/"+ newName).replace('\\','/');
+//                String filePath = (file.getCanonicalPath() + "/" + newName).replace('\\','/');
+                String filePath = (file.getPath() + File.separator + newName);
+                if (File.separator.equals("/")) {
+                    filePath = filePath.replace('\\', '/');
+                }
+                filePath.replace("//", "\\\\");
                 LOG.info("-----------【" + filePath + "】-----------");
 
                 Book book = new Book();
@@ -207,7 +217,6 @@ public class RestBookController {
         return CommonResult.fail(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.getReasonPhrase());
     }
 
-
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "修改书籍",
@@ -242,18 +251,26 @@ public class RestBookController {
                                             @RequestParam("bookId") Integer bookId) throws Exception {
         LOG.info("userAgent = " + userAgent);
         Book book = bookRepository.findById(bookId.longValue()).orElse(null);
+        if (book == null) {
+            byte[] a = new byte[100];
+            return new ResponseEntity<byte[]>(a,HttpStatus.NOT_FOUND);
+        }
+
         // 下载文件路径
-        String path = book.getBookUri().replace('\\','/');
-        int firstIndex = path.indexOf("/uploadFile/");
-        LOG.info(path.substring(firstIndex));
+        String path = book.getBookUri();
+
         int lastIndex = path.lastIndexOf(".");
+//        int lastIndex1 = path.lastIndexOf(File.separator);
+//        log.info("filename1" + path.substring(lastIndex1));
+
         // 构建File
         String filename = book.getBookName() + path.substring(lastIndex);
         LOG.info("path= " + path);
         LOG.info("File.separator= " + File.separator);
         LOG.info(filename);
-//        File file = new File(path + File.separator + filename);
+//      File file = new File(path + File.separator + filename);
         File file = new File(path);
+        log.info("fielPath= " + file.getCanonicalPath());
         // ok表示Http协议中的状态 200
         ResponseEntity.BodyBuilder builder = ResponseEntity.ok();
         // 内容长度
