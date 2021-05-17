@@ -1,5 +1,6 @@
 package com.aruoxi.ebookshop;
 
+import com.aruoxi.ebookshop.common.RegexUtil;
 import com.aruoxi.ebookshop.controller.dto.RegistrationDto;
 import com.aruoxi.ebookshop.domain.Book;
 import com.aruoxi.ebookshop.repository.BookRepository;
@@ -22,11 +23,15 @@ import javax.annotation.Resource;
 
 @SpringBootTest
 class EbookshopApplicationTests {
+	private static final Logger log = LoggerFactory.getLogger(EbookshopApplicationTests.class);
+
 	private static final Logger LOG = LoggerFactory.getLogger(EbookshopApplicationTests.class);
 	@Resource
 	private BookRepository bookRepository;
 	@Resource
 	private BookServiceImpl bookService;
+	@Resource
+	private RegexUtil regexUtil;
 
 	/**
 	 * 新建并保存书籍的测试
@@ -118,4 +123,28 @@ class EbookshopApplicationTests {
 		LOG.info("books = " + books);
 	}
 
+	@Test
+	void testRegex() {
+		boolean a = regexUtil.isPageStartAndEnd("3-2");
+		boolean b = regexUtil.isPageStartAndEnd("1-2");
+		boolean c = regexUtil.isPageStartAndEnd("6");
+		boolean d = regexUtil.isPageStartAndEnd("1-3-6");
+		log.info("a = " + a);
+		log.info("b = " + b);
+		log.info("c = " + c);
+		log.info("d = " + d);
+	}
+
+	@Test
+	void testRegex2() {
+		boolean a = regexUtil.isNumber("3-2");
+		boolean b = regexUtil.isNumber("1-2");
+		boolean c = regexUtil.isNumber("6");
+		boolean d = regexUtil.isNumber("1-3-6");
+		regexUtil.isNumber("2");
+		log.info("a = " + a);
+		log.info("b = " + b);
+		log.info("c = " + c);
+		log.info("d = " + d);
+	}
 }

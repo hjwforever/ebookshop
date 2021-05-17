@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.*;
-import java.util.Date;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 /**
  * Copyright(C), 2020-2021
@@ -118,6 +118,44 @@ public class BookServiceImpl implements BookService {
             contxt = contents.substring((pageNum - 1) * PAGE_BYTES, pageNum * PAGE_BYTES);
         }
         return contxt;
+    }
+
+    public ArrayList<String> getAllBookContent(Long bookId) throws IOException {
+
+        String filePath = bookRepository.findByBookId(bookId).getBookUri();
+        File textFile = new File(filePath);
+        int bytes = (int) textFile.length();
+//        System.out.println(bytes);
+        byte[] content = new byte[(int) textFile.length()];
+        try (FileInputStream fileInputStream = new FileInputStream(textFile)) {
+            fileInputStream.read(content);
+//            System.out.println(new String(content, "UTF-8"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String contents = new String(content, StandardCharsets.UTF_8);
+        int pageBytes = 1024 * 3;
+
+        int num = contents.length();
+        int totalPageNum = num / pageBytes + 1;
+
+//        HashMap<Integer, String> pages = new HashMap<>();
+//        for (int i = 1; i < totalPageNum; i++) {
+//            pages.put(i, contents.substring(0, pageBytes));
+//            contents = contents.substring(pageBytes);
+//        }
+//
+//        pages.put(totalPageNum, contents);
+
+        ArrayList<String> pages = new ArrayList<>();
+
+        for (int i = 1; i < totalPageNum; i++) {
+            pages.add(contents.substring(0, pageBytes));
+            contents = contents.substring(pageBytes);
+        }
+
+        pages.add(contents);
+        return pages;
     }
 
     public int getTotalPageNum(Long bookId) throws IOException {

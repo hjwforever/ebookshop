@@ -2,11 +2,16 @@ package com.aruoxi.ebookshop.controller.restController;
 
 import cn.leancloud.AVFile;
 import com.aruoxi.ebookshop.common.CommonResult;
+import com.aruoxi.ebookshop.common.RegexUtil;
 import com.aruoxi.ebookshop.controller.dto.BookSearchDto;
 import com.aruoxi.ebookshop.controller.dto.BookUploadDto;
+import com.aruoxi.ebookshop.controller.restController.dto.BookContent;
 import com.aruoxi.ebookshop.domain.Book;
+import com.aruoxi.ebookshop.exception.ResourceNotFoundException;
 import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.impl.BookServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -18,6 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javassist.NotFoundException;
 import org.apache.catalina.Store;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -34,14 +40,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static com.aruoxi.ebookshop.controller.BookController.getBookUrl;
 
@@ -58,12 +62,70 @@ public class RestBookController {
     private BookServiceImpl bookService;
     @Resource
     private BookRepository bookRepository;
+    @Resource
+    private RegexUtil regexUtil;
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @Operation(summary = "根据id查询书籍", description = "根据id查询书籍")
     public CommonResult<Book> findById(@PathVariable  @Parameter(description = "书籍id") Long id) {
         return CommonResult.success(bookService.findById(id));
     }
+
+    @RequestMapping(value = "/{bookID}/pages", method = RequestMethod.GET)
+    @Operation(summary = "根据id获取书籍所有内容", description = "根据id获取书籍所有内容")
+    public CommonResult<BookContent> bookAllContents(@PathVariable @Parameter(description = "书籍id") Long bookID) throws IOException, ResourceNotFoundException {
+        try {
+            Book book = bookService.findById(bookID);
+            int totalPageNum = bookService.getTotalPageNum(bookID);
+
+            return CommonResult.success(new BookContent(bookID, book.getBookName(), book.getAuthor(), totalPageNum, false, bookService.getAllBookContent(bookID)));
+        } catch (Exception e) {
+          throw new ResourceNotFoundException(e.getMessage());
+        }
+    }
+
+
+    @RequestMapping(value = "/{bookID}/pages/{bookPagesSearch}", method = RequestMethod.GET)
+    @Operation(summary = "根据id及页码pageNum获取书籍具体页面内容", description = "根据id及页码pageNum获取书籍具体页面内容")
+    public CommonResult<BookContent> bookContents(@PathVariable @Parameter(description = "书籍id") Long bookID, @PathVariable @Parameter(description = "书籍页码", example = "1, 2-3") String bookPagesSearch) throws IOException, ResourceNotFoundException {
+        Book book = bookService.findById(bookID);
+        Integer totalPageNum = bookService.getTotalPageNum(bookID);
+        boolean isSinglePage = true;
+        ArrayList<String> pages = new ArrayList<String>();
+
+        // 如果获取的单个页面，例如 books/pages/1 ,即第1页
+        if (regexUtil.isNumber(bookPagesSearch)) {
+            int pageNum = Integer.parseInt(bookPagesSearch);
+            String content = bookService.getbookContent(bookID, pageNum);
+            pages.add(content);
+
+          // 如果获取的是页面范围，例如 books/pages/1-10 ,即第1页到第10页
+        } else if (regexUtil.isPageStartAndEnd(bookPagesSearch)) {
+            isSinglePage = false;
+            String[] strings = bookPagesSearch.split("-");
+            int pageStart = Integer.parseInt(strings[0]);
+            int pageEnd = Integer.parseInt(strings[1]);
+            for (int i = pageStart; i <= pageEnd; i++) {
+                pages.add(bookService.getbookContent(bookID, i));
+            }
+        } else {
+            throw new ResourceNotFoundException();
+        }
+
+        return CommonResult.success(new BookContent(bookID, book.getBookName(), book.getAuthor(), totalPageNum, isSinglePage, pages));
+    }
+
+//    @RequestMapping(value = "/{bookID}/pages/{pageNum}", method = RequestMethod.GET)
+//    @Operation(summary = "根据id及页码pageNum获取书籍具体页面内容", description = "根据id及页码pageNum获取书籍具体页面内容")
+//    public CommonResult<BookContent> bookContent(@PathVariable  @Parameter(description = "书籍id") Long bookID, @PathVariable  @Parameter(description = "书籍页码") Integer pageNum) throws IOException {
+//        Book book = bookService.findById(bookID);
+//        String author = book.getAuthor();
+//        Integer totalPageNum = bookService.getTotalPageNum(bookID);
+//        String content = bookService.getbookContent(bookID, pageNum);
+//        BookContent bookContent = new BookContent(bookID, author, totalPageNum, pageNum, content);
+//
+//        return CommonResult.success(bookContent);
+//    }
 
     // 分页查询指定条件的所有书籍
     @GetMapping
@@ -292,15 +354,14 @@ public class RestBookController {
         return builder.body(FileUtils.readFileToByteArray(file));
     }
 
-    @Operation(summary = "书籍分页内容",
+    @Operation(summary = "书籍内容",
         description = "根据搜索条件返回相应的书籍分页内容",
         security = @SecurityRequirement(name = "需要登录"))
     @GetMapping(value = "/content")
     public CommonResult<String> findContent(BookSearchDto search) throws IOException {
         int pageNum = search.getPageNum();
-//        Integer pageSize = search.getPageSize();
-//        String bookName = search.getBookName();
         return CommonResult.success(bookService.getbookContent(search.getBookId(),pageNum));
     }
 
 }
+

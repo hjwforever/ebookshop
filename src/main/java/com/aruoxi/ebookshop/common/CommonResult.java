@@ -1,5 +1,6 @@
 package com.aruoxi.ebookshop.common;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
