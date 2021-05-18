@@ -15,6 +15,9 @@ ebookshop:
     jwtSecret: ebookshop_security_ddd
     jwtExpirationMs: 86400000
     jwtRefreshExpirationMs: 604800000
+  appid: CyF9Q1Ug9LkqeKsK32cHqNE3-gzGzoHsz
+  appKey: RpP6VQSp0Y4R9wEWXLwVLtFE
+  appUrl:
 
 # ===== SpringDoc配置 =====#
 springdoc:
