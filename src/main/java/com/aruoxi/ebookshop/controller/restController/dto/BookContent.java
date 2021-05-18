@@ -12,14 +12,14 @@ public class BookContent {
   private String author;
   private Integer totalPageNum;
   private Boolean isSinglePage;
-  private List content;
+  private List<BookPage> contents;
 
-  public BookContent(Long bookId, String bookName, String author, Integer totalPageNum, Boolean isSinglePage, List content) {
+  public BookContent(Long bookId, String bookName, String author, Integer totalPageNum, Boolean isSinglePage, List<BookPage> contents) {
     this.bookId = bookId;
     this.bookName = bookName;
     this.author = author;
     this.totalPageNum = totalPageNum;
     this.isSinglePage = isSinglePage;
-    this.content = content;
+    this.contents = contents;
   }
 }

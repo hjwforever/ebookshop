@@ -3,8 +3,6 @@ package com.aruoxi.ebookshop.service.impl;
 import com.aruoxi.ebookshop.common.RegexUtil;
 import com.aruoxi.ebookshop.domain.User;
 import com.aruoxi.ebookshop.repository.UserRepository;
-import jdk.nashorn.internal.runtime.regexp.joni.Regex;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

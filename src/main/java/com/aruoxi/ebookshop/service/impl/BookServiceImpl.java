@@ -1,5 +1,7 @@
 package com.aruoxi.ebookshop.service.impl;
 
+import com.aruoxi.ebookshop.controller.restController.dto.BookContent;
+import com.aruoxi.ebookshop.controller.restController.dto.BookPage;
 import com.aruoxi.ebookshop.domain.Book;
 import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.BookService;
@@ -103,7 +105,7 @@ public class BookServiceImpl implements BookService {
             e.printStackTrace();
         }
         String contents = new String(content, "utf-8");
-        System.out.println("contents = " + contents);
+//        System.out.println("contents = " + contents);
 
         int PAGE_BYTES = 1024*3;
 
@@ -120,7 +122,7 @@ public class BookServiceImpl implements BookService {
         return contxt;
     }
 
-    public ArrayList<String> getAllBookContent(Long bookId) throws IOException {
+    public ArrayList<BookPage> getAllBookContent(Long bookId) throws IOException {
 
         String filePath = bookRepository.findByBookId(bookId).getBookUri();
         File textFile = new File(filePath);
@@ -139,22 +141,24 @@ public class BookServiceImpl implements BookService {
         int num = contents.length();
         int totalPageNum = num / pageBytes + 1;
 
-//        HashMap<Integer, String> pages = new HashMap<>();
-//        for (int i = 1; i < totalPageNum; i++) {
-//            pages.put(i, contents.substring(0, pageBytes));
-//            contents = contents.substring(pageBytes);
-//        }
-//
-//        pages.put(totalPageNum, contents);
+        // HashMap————最终获得书籍所有页的 对象
+        //        HashMap<Integer, String> pages = new HashMap<>();
+        //        for (int i = 1; i < totalPageNum; i++) {
+        //            pages.put(i, contents.substring(0, pageBytes));
+        //            contents = contents.substring(pageBytes);
+        //        }
+        //
+        //        pages.put(totalPageNum, contents);
 
-        ArrayList<String> pages = new ArrayList<>();
+        // ArrayList————最终获得书籍所有页的 数组
+        ArrayList<BookPage> pages = new ArrayList<>();
 
         for (int i = 1; i < totalPageNum; i++) {
-            pages.add(contents.substring(0, pageBytes));
+            pages.add(new BookPage(i,contents.substring(0, pageBytes)));
             contents = contents.substring(pageBytes);
         }
 
-        pages.add(contents);
+        pages.add(new BookPage(totalPageNum, contents));
         return pages;
     }
 
@@ -187,7 +191,7 @@ public class BookServiceImpl implements BookService {
             e.printStackTrace();
         }
         String contents = new String(content, "utf-8");
-        System.out.println("contents = " + contents);
+//        System.out.println("contents = " + contents);
 
         int PAGE_BYTES = 1024*3;
 

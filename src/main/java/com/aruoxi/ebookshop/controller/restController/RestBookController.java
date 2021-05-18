@@ -6,6 +6,7 @@ import com.aruoxi.ebookshop.common.RegexUtil;
 import com.aruoxi.ebookshop.controller.dto.BookSearchDto;
 import com.aruoxi.ebookshop.controller.dto.BookUploadDto;
 import com.aruoxi.ebookshop.controller.restController.dto.BookContent;
+import com.aruoxi.ebookshop.controller.restController.dto.BookPage;
 import com.aruoxi.ebookshop.domain.Book;
 import com.aruoxi.ebookshop.exception.ResourceNotFoundException;
 import com.aruoxi.ebookshop.repository.BookRepository;
@@ -91,22 +92,22 @@ public class RestBookController {
         Book book = bookService.findById(bookID);
         Integer totalPageNum = bookService.getTotalPageNum(bookID);
         boolean isSinglePage = true;
-        ArrayList<String> pages = new ArrayList<String>();
+        ArrayList<BookPage> pages = new ArrayList<BookPage>();
 
-        // 如果获取的单个页面，例如 books/pages/1 ,即第1页
+        // 如果获取的单个页面，例如 api/books/30/pages/1 ,即第1页
         if (regexUtil.isNumber(bookPagesSearch)) {
             int pageNum = Integer.parseInt(bookPagesSearch);
             String content = bookService.getbookContent(bookID, pageNum);
-            pages.add(content);
+            pages.add(new BookPage(pageNum, content));
 
-          // 如果获取的是页面范围，例如 books/pages/1-10 ,即第1页到第10页
+          // 如果获取的是页面范围，例如 api/books/30/pages/1-10 ,即第1页到第10页
         } else if (regexUtil.isPageStartAndEnd(bookPagesSearch)) {
             isSinglePage = false;
             String[] strings = bookPagesSearch.split("-");
             int pageStart = Integer.parseInt(strings[0]);
             int pageEnd = Integer.parseInt(strings[1]);
             for (int i = pageStart; i <= pageEnd; i++) {
-                pages.add(bookService.getbookContent(bookID, i));
+                pages.add(new BookPage(i, bookService.getbookContent(bookID, i)));
             }
         } else {
             throw new ResourceNotFoundException();
