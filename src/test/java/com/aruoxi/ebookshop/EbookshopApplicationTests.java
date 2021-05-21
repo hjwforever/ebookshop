@@ -1,7 +1,6 @@
 package com.aruoxi.ebookshop;
 
 import com.aruoxi.ebookshop.common.RegexUtil;
-import com.aruoxi.ebookshop.controller.dto.RegistrationDto;
 import com.aruoxi.ebookshop.domain.Book;
 import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.impl.BookServiceImpl;
@@ -20,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.util.LinkedHashMap;
 
 @SpringBootTest
 class EbookshopApplicationTests {
@@ -110,7 +110,7 @@ class EbookshopApplicationTests {
 		param.put("email", "registerTest@qq.com");
 		param.put("password", "123456");
 
-		HttpEntity formEntity = new HttpEntity(param, headers);
+		HttpEntity<JSONObject> formEntity = new HttpEntity<>(param, headers);
 
 		String result = client.postForObject("http://localhost:8081/api/auth/register", formEntity, String.class);
 		LOG.info("result: " + result);
@@ -146,5 +146,45 @@ class EbookshopApplicationTests {
 		log.info("b = " + b);
 		log.info("c = " + c);
 		log.info("d = " + d);
+	}
+
+	/**
+	 * 管理员-测试admin权限
+	 */
+	@Test
+	void testAdminRoot() {
+		RestTemplate client = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
+		headers.setContentType(type);
+		headers.add("Accept", MediaType.APPLICATION_JSON.toString());
+//    headers.add("Authorization", "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0IiwiaWF0IjoxNjIwNjU2NTYyLCJleHAiOjE2MjA3NDI5NjJ9.h6OvwkWJh8purA9Lj16gkKY_j1eIbhfYdMfF96-btQxrS0CjGJi9z9iiXrQObbFCgpOn0iqPDLP8SIFhAjJAgA");
+
+		JSONObject param = new JSONObject();
+		param.put("username", "hjw");
+		param.put("password", "123456");
+
+		HttpEntity<JSONObject> formEntity = new HttpEntity<>(param, headers);
+
+		JSONObject result = client.postForObject("http://localhost:8081/api/auth/login", formEntity, JSONObject.class);
+		LOG.info("result: " + result);
+
+
+		HttpHeaders headers1 = new HttpHeaders();
+		MediaType type1 = MediaType.parseMediaType("application/json; charset=UTF-8");
+		headers1.setContentType(type1);
+		headers1.add("Accept", "*/*");
+
+		RestTemplate client1 = new RestTemplate();
+		String token = ((LinkedHashMap<String,String>)result.get("data")).get("token");
+		headers1.add("Authorization", "Bearer " + token);
+		LOG.info("token: " + token);
+		LOG.info("headers1: " + headers1);
+
+//    JSONObject param1 = new JSONObject();
+		HttpEntity formEntity1 = new HttpEntity(headers1);
+		String result1 = client1.getForObject("http://localhost:8081/api/books/30/pages/1-10", String.class, formEntity1);
+
+		LOG.info("admin_result: " + result1);
 	}
 }

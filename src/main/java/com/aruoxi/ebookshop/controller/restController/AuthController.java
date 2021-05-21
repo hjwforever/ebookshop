@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Tag(name = "注册API接口")
+@Tag(name = "注册、登录（JWT）API接口")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
@@ -125,6 +125,9 @@ public class AuthController {
 	}
 
 	@PostMapping("/refreshtoken")
+	@Operation(summary = "刷新token",
+			description = "根据refreshtoken返回新的用户token",
+			security = @SecurityRequirement(name = "至少需要user权限"))
 	public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
 		String requestRefreshToken = request.getRefreshToken();
 

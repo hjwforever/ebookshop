@@ -9,6 +9,7 @@ import com.aruoxi.ebookshop.repository.BookRepository;
 import com.aruoxi.ebookshop.service.impl.BookServiceImpl;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -146,6 +147,7 @@ public class BookController {
     // 上传文件至云端
     @PostMapping(value = "/upload1")
     @ResponseBody
+    @Hidden
     public CommonResult upload1(HttpServletRequest request,
                                @RequestParam("file") MultipartFile uploadFile) throws Exception {
         if (uploadFile != null) {
@@ -193,6 +195,7 @@ public class BookController {
     // 上传文件会自动绑定到MultipartFile中
     @PostMapping(value = "/upload")
     @ResponseBody
+    @Hidden
     public CommonResult upload(HttpServletRequest request,
                                @RequestParam("file") MultipartFile uploadFile, @RequestParam("bookName") String bookName, @RequestParam("bookAuthor") String bookAuthor, @RequestParam("price") String price) throws Exception {
 

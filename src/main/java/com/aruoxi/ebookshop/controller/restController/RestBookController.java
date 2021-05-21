@@ -322,15 +322,20 @@ public class RestBookController {
     @PreAuthorize("hasAnyRole('USER','ADMIN','SELLER')")
     @ResponseBody
     @RequestMapping(value = "/downloadUrl", method = RequestMethod.GET)
-    @Hidden
+    @Operation(summary = "云存储文件url",
+        description = "获取云存储文件url",
+        security = @SecurityRequirement(name = "至少需要user权限"))
     public CommonResult download(HttpServletRequest request,
                                  @RequestHeader("User-Agent") String userAgent,
                                  @RequestParam("bookId") Long bookId) throws Exception {
         return getBookUrl(bookId, bookRepository);
     }
 
-    @PreAuthorize("hasAnyRole('USER','ADMIN','SELLER')")
-    @RequestMapping(value = "/download")
+    // @PreAuthorize("hasAnyRole('USER','ADMIN','SELLER')")
+    @RequestMapping(value = "/download", method = RequestMethod.GET)
+    @Operation(summary = "从服务器下载书籍文件",
+        description = "从服务器下载书籍文件",
+        security = @SecurityRequirement(name = "至少需要user权限"))
     public ResponseEntity<byte[]> download1(HttpServletRequest request,
                                             @RequestHeader("User-Agent") String userAgent,
                                             @RequestParam("bookId") Integer bookId) throws Exception {
