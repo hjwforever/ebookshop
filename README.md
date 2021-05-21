@@ -36,7 +36,9 @@
 │ │ │   └─aruoxi
 │ │ │     └─ebookshop
 │ │ │       ├─common
-│ │ │       │ └─CommonResult.java
+│ │ │       │ ├─CommonResult.java
+│ │ │       │ ├─JwtUtils.java
+│ │ │       │ └─RegexUtil.java
 │ │ │       ├─config ------------------------------- // 所有配置类
 │ │ │       │ ├─ApplicationInitializer.java -------- // 程序初始化
 │ │ │       │ ├─ExceptionHandle.java --------------- // 全局异常拦截器
@@ -48,7 +50,21 @@
 │ │ │       │ ├─dto -------------------------------- // 数据传输对象类集合
 │ │ │       │ ├─LoginController.java
 │ │ │       │ ├─MainController.java
-│ │ │       │ ├─restController
+│ │ │       │ ├─restController  -------------------- // Rest API接口
+│ │ │       │ │ ├─AuthController.java ------------ // 注册登录(JWT)、refreshJWTtoken
+│ │ │       │ │ ├─dto
+│ │ │       │ │ │ ├─BookContent.java
+│ │ │       │ │ │ ├─BookPage.java
+│ │ │       │ │ │ ├─JwtResponse.java
+│ │ │       │ │ │ ├─LoginRequest.java
+│ │ │       │ │ │ ├─RestLoginDto.java
+│ │ │       │ │ │ ├─RestRegistrationDto.java
+│ │ │       │ │ │ ├─TokenRefreshRequest.java
+│ │ │       │ │ │ ├─TokenRefreshResponse.java
+│ │ │       │ │ │ └─UserInfo.java
+│ │ │       │ │ ├─RestBookController.java
+│ │ │       │ │ ├─RestUserController.java
+│ │ │       │ │ └─TestController.java
 │ │ │       │ └─UserRegistrationController.java
 │ │ │       ├─domain ------------------------------- // 实体类
 │ │ │       │ ├─Book.java
@@ -57,6 +73,8 @@
 │ │ │       │ └─User.java
 │ │ │       ├─EbookshopApplication.java ------------ // 主程序启动类
 │ │ │       ├─exception ---------------------------- // 自定义异常类
+│ │ │       ├─filter    ---------------------------- // 过滤器(JWT token)
+│ │ │       ├─interception ------------------------- // 拦截器(UnauthorizedAuthToken)
 │ │ │       ├─repository --------------------------- // repository
 │ │ │       │ ├─BookRepository.java
 │ │ │       │ ├─RoleRepository.java
@@ -93,6 +111,9 @@
 │         └─ebookshop
 │           ├─ApplicationTests.java
 │           ├─dto
+│           │ ├─BookSearchDto.java
+│           │ ├─LoginDto.java
+│           │ └─RegistrationDto.java
 │           └─EbookshopApplicationTests.java
 └─target
 ```

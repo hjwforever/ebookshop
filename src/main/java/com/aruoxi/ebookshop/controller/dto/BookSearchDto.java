@@ -29,6 +29,9 @@ public class BookSearchDto {
   @Schema(description = "书籍列表 每页条数")
   private Integer pageSize;
 
+  @Schema(description = "服务器是否有书籍资源 即能否阅读")
+  private Boolean canRead;
+
   @Hidden
   @Schema(description = "最小价格")
   private Float minPrice;
@@ -56,9 +59,40 @@ public class BookSearchDto {
   @Schema(description = "搜索的书籍名")
   private String searchBookName;
 
-  public BookSearchDto(String bookName,Long bookId, String searchBookName, String authorName, Integer pageNum, Integer pageSize, Float minPrice, Float maxPrice, Boolean isExact, String beforeYear, String afterYear, Integer newPageNum) {
+  public BookSearchDto() {
+    this.bookName = "";
+    this.authorName = "";
+    this.pageNum = 1;
+    this.pageSize = 10;
+    this.canRead = false;
+  }
+
+  public BookSearchDto(String bookName, Integer pageNum, Integer pageSize, Boolean canRead) {
+    this();
+    this.bookName = bookName;
+    this.pageNum = pageNum;
+    this.pageSize = pageSize;
+    this.canRead = canRead;
+  }
+
+  public BookSearchDto(String bookName, Integer pageNum, Integer pageSize) {
+    this(bookName, pageNum, pageSize, false);
+  }
+
+  public BookSearchDto(Integer pageNum, Integer pageSize, Boolean canRead) {
+    this();
+    this.pageNum = pageNum;
+    this.pageSize = pageSize;
+    this.canRead = canRead;
+  }
+
+  public BookSearchDto(Integer pageNum, Integer pageSize) {
+    this(pageNum, pageSize, false);
+  }
+
+  public BookSearchDto(String bookName, Long bookId, String searchBookName, String authorName, Integer pageNum, Integer pageSize, Float minPrice, Float maxPrice, Boolean isExact, String beforeYear, String afterYear, Integer newPageNum) {
     this.bookName = bookName == null ? "" : bookName;
-    this.bookId = bookId == null ? 0 : bookId;
+    this.bookId = bookId == null ? 0L : bookId;
     this.searchBookName = searchBookName == null ? "" : searchBookName;
     this.authorName = authorName == null ? "" : authorName;
     this.pageNum = pageNum == null ? 1 : pageNum;

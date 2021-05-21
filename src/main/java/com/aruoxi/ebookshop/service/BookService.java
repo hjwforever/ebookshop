@@ -1,6 +1,7 @@
 package com.aruoxi.ebookshop.service;
 
 
+import com.aruoxi.ebookshop.controller.dto.BookSearchDto;
 import com.aruoxi.ebookshop.domain.Book;
 import org.springframework.data.domain.Page;
 
@@ -20,6 +21,6 @@ public interface BookService {
    void delete(Long id);
    Book findById(Long id);
    List<Book> findAll();
-   Page<Book> findPage(Integer pageNum, Integer pageSize, String name);
+   Page<Book> findPage(BookSearchDto bookSearchDto);
    String getbookContent(Long bookId,int pageNum) throws IOException;
 }

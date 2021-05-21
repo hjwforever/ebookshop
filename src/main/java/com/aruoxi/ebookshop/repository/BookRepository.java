@@ -20,6 +20,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
      */
    // List<Book> findByBookName(String name);
 
+    Page<Book> findAllByBookUriIsNotNull(Pageable pageRequest);
+
     Book findByBookName(String name);
     Book findByBookId(Long bookId);
 
@@ -32,4 +34,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
      */
     @Query(value = "select * from ebooks where book_name like concat('%',?1,'%')", countQuery = "select count(*) from ebooks where book_name = concat('%',?1,'%')", nativeQuery = true)
     Page<Book> findByNameLike(String name, Pageable pageRequest);
+
+    @Query(value = "select * from ebooks where book_name like concat('%',?1,'%')", countQuery = "select count(*) from ebooks where book_name = concat('%',?1,'%')", nativeQuery = true)
+    Page<Book> findByNameLikeAndBookUriIsNotNull(String name, Pageable pageRequest);
 }

@@ -66,12 +66,26 @@ public class RestBookController {
     @Resource
     private RegexUtil regexUtil;
 
+    // 分页查询指定条件的所有书籍
+    @GetMapping
+    @Operation(summary = "分页书籍列表", description = "根据BookSearchDto查询书籍")
+    public CommonResult<Page<Book>> findAll(BookSearchDto search) {
+        log.info("search = " + search);
+        Integer pageNum = search.getPageNum();
+        Integer pageSize = search.getPageSize();
+        String bookName = search.getBookName();
+        Boolean canRead = search.getCanRead();
+
+        return CommonResult.success(bookService.findPage(new BookSearchDto(bookName, pageNum, pageSize, canRead)));
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @Operation(summary = "根据id查询书籍", description = "根据id查询书籍")
     public CommonResult<Book> findById(@PathVariable  @Parameter(description = "书籍id") Long id) {
         return CommonResult.success(bookService.findById(id));
     }
 
+    @PreAuthorize("hasAnyRole('USER','ADMIN','SELLER')")
     @RequestMapping(value = "/{bookID}/pages", method = RequestMethod.GET)
     @Operation(summary = "根据id获取书籍所有内容", description = "根据id获取书籍所有内容")
     public CommonResult<BookContent> bookAllContents(@PathVariable @Parameter(description = "书籍id") Long bookID) throws IOException, ResourceNotFoundException {
@@ -85,18 +99,22 @@ public class RestBookController {
         }
     }
 
-
+    @PreAuthorize("hasAnyRole('USER','ADMIN','SELLER')")
     @RequestMapping(value = "/{bookID}/pages/{bookPagesSearch}", method = RequestMethod.GET)
     @Operation(summary = "根据id及页码pageNum获取书籍具体页面内容", description = "根据id及页码pageNum获取书籍具体页面内容")
     public CommonResult<BookContent> bookContents(@PathVariable @Parameter(description = "书籍id") Long bookID, @PathVariable @Parameter(description = "书籍页码", example = "1, 2-3") String bookPagesSearch) throws IOException, ResourceNotFoundException {
         Book book = bookService.findById(bookID);
-        Integer totalPageNum = bookService.getTotalPageNum(bookID);
+        int totalPageNum = bookService.getTotalPageNum(bookID);
         boolean isSinglePage = true;
         ArrayList<BookPage> pages = new ArrayList<BookPage>();
 
         // 如果获取的单个页面，例如 api/books/30/pages/1 ,即第1页
         if (regexUtil.isNumber(bookPagesSearch)) {
             int pageNum = Integer.parseInt(bookPagesSearch);
+            if (pageNum > totalPageNum) {
+                return CommonResult.success(new BookContent(bookID, book.getBookName(), book.getAuthor(), totalPageNum, true, null));
+            }
+
             String content = bookService.getbookContent(bookID, pageNum);
             pages.add(new BookPage(pageNum, content));
 
@@ -106,6 +124,15 @@ public class RestBookController {
             String[] strings = bookPagesSearch.split("-");
             int pageStart = Integer.parseInt(strings[0]);
             int pageEnd = Integer.parseInt(strings[1]);
+
+            if (pageStart > totalPageNum) {
+                return CommonResult.success(new BookContent(bookID, book.getBookName(), book.getAuthor(), totalPageNum, false, null));
+            } else if (pageStart == totalPageNum) {
+                pages.add(new BookPage(pageStart, bookService.getbookContent(bookID, pageStart)));
+            } else if (pageEnd > totalPageNum) {
+                pageEnd = totalPageNum;
+            }
+
             for (int i = pageStart; i <= pageEnd; i++) {
                 pages.add(new BookPage(i, bookService.getbookContent(bookID, i)));
             }
@@ -128,19 +155,8 @@ public class RestBookController {
 //        return CommonResult.success(bookContent);
 //    }
 
-    // 分页查询指定条件的所有书籍
-    @GetMapping
-    @Operation(summary = "分页书籍列表", description = "根据BookSearchDto查询书籍")
-    public CommonResult<Page<Book>> findAll(BookSearchDto search) {
-        log.info("search = " + search);
-        Integer pageNum = search.getPageNum();
-        Integer pageSize = search.getPageSize();
-        String bookName = search.getBookName();
-        return CommonResult.success(bookService.findPage(pageNum, pageSize, bookName));
-    }
-
-    @PostMapping
     @PreAuthorize("hasRole('SELLER') or hasRole('ADMIN')")
+    @PostMapping
     @Operation(summary = "保存书籍的实体",
         description = "上传新增书籍",
         security = @SecurityRequirement(name = "需要admin权限"))
@@ -150,8 +166,12 @@ public class RestBookController {
     }
 
     // 上传文件会自动绑定到MultipartFile中
+    @PreAuthorize("hasAnyRole('SELLER','ADMIN')")
     @PostMapping(value = "/upload")
     @ResponseBody
+    @Operation(summary = "上传书籍",
+        description = "上传书籍",
+        security = @SecurityRequirement(name = "需要admin权限"))
     public CommonResult upload(HttpServletRequest request, MultipartFile uploadFile,
 //        , @RequestParam(value = "bookName", required = false) String bookName, @RequestParam(value = "bookAuthor", required = false) String bookAuthor, @RequestBody JSONPObject jsonpObject
                                BookUploadDto uploadBookInfo) throws Exception {
@@ -280,8 +300,8 @@ public class RestBookController {
         return CommonResult.fail(HttpStatus.NOT_FOUND, HttpStatus.NOT_FOUND.getReasonPhrase());
     }
 
+    @PreAuthorize("hasAnyRole('SELLER','ADMIN')")
     @PutMapping
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "修改书籍",
         description = "修改书籍",
         security = @SecurityRequirement(name = "需要admin权限"))
@@ -290,8 +310,8 @@ public class RestBookController {
         return CommonResult.success();
     }
 
-    @DeleteMapping(path = "/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping(path = "/{id}")
     @Operation(summary = "删除书籍",
         description = "根据id删除书籍",
         security = @SecurityRequirement(name = "需要admin权限"))
@@ -299,8 +319,9 @@ public class RestBookController {
         bookService.delete(id);
     }
 
+    @PreAuthorize("hasAnyRole('USER','ADMIN','SELLER')")
     @ResponseBody
-    @RequestMapping(value = "/downloadUrl")
+    @RequestMapping(value = "/downloadUrl", method = RequestMethod.GET)
     @Hidden
     public CommonResult download(HttpServletRequest request,
                                  @RequestHeader("User-Agent") String userAgent,
@@ -308,6 +329,7 @@ public class RestBookController {
         return getBookUrl(bookId, bookRepository);
     }
 
+    @PreAuthorize("hasAnyRole('USER','ADMIN','SELLER')")
     @RequestMapping(value = "/download")
     public ResponseEntity<byte[]> download1(HttpServletRequest request,
                                             @RequestHeader("User-Agent") String userAgent,
@@ -355,10 +377,12 @@ public class RestBookController {
         return builder.body(FileUtils.readFileToByteArray(file));
     }
 
+    @PreAuthorize("hasAnyRole('USER','ADMIN','SELLER')")
     @Operation(summary = "书籍内容",
         description = "根据搜索条件返回相应的书籍分页内容",
         security = @SecurityRequirement(name = "需要登录"))
     @GetMapping(value = "/content")
+    @Hidden
     public CommonResult<String> findContent(BookSearchDto search) throws IOException {
         int pageNum = search.getPageNum();
         return CommonResult.success(bookService.getbookContent(search.getBookId(),pageNum));

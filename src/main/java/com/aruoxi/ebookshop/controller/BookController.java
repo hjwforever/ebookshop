@@ -73,7 +73,7 @@ public class BookController {
         LOG.info("user" + user);
 
 
-        Page<Book> books = bookService.findPage(bookSearchDto.getPageNum(), bookSearchDto.getPageSize(), bookSearchDto.getBookName());
+        Page<Book> books = bookService.findPage(new BookSearchDto(bookSearchDto.getBookName(), bookSearchDto.getPageNum(), bookSearchDto.getPageSize()));
         LOG.info("总分页数据 = " + books);
         LOG.info("总页数  " + books.getTotalPages());
         LOG.info("-----------------该页数据------------------------");
@@ -125,7 +125,8 @@ public class BookController {
         String bookName = bookSearchDto.getBookName();
         LOG.info("pageSize = " + pageSize);
         LOG.info("bookName = " + bookName);
-        books = bookService.findPage(bookSearchDto.getNewPageNum(), pageSize, bookName);
+
+        books = bookService.findPage(new BookSearchDto(bookName, bookSearchDto.getNewPageNum(), pageSize));
         LOG.info("books = " + books);
         model.addAttribute("books", books.getContent());
         HashMap<Object, Object> map = new HashMap<>();

@@ -1,5 +1,6 @@
 package com.aruoxi.ebookshop.service.impl;
 
+import com.aruoxi.ebookshop.controller.dto.BookSearchDto;
 import com.aruoxi.ebookshop.controller.restController.dto.BookContent;
 import com.aruoxi.ebookshop.controller.restController.dto.BookPage;
 import com.aruoxi.ebookshop.domain.Book;
@@ -57,19 +58,31 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> findPage(Integer pageNum, Integer pageSize, String name) {
+    public Page<Book> findPage(BookSearchDto bookSearchDto) {
+        Integer pageNum = bookSearchDto.getPageNum();
+        Integer pageSize = bookSearchDto.getPageSize();
+        String name = bookSearchDto.getBookName();
+        Boolean canRead = bookSearchDto.getCanRead();
+
         Pageable pageRequest = PageRequest.of(pageNum - 1, pageSize,
                 Sort.by("starts").ascending());
         if (name != null && !name.equals("")) {
+            if (canRead) {
+                return bookRepository.findByNameLikeAndBookUriIsNotNull(name, pageRequest);
+            }
             return bookRepository.findByNameLike(name, pageRequest);
+        }
+
+        if (canRead) {
+            return bookRepository.findAllByBookUriIsNotNull(pageRequest);
         }
 
         return bookRepository.findAll(pageRequest);
     }
 
-    public Page<Book> findPage(Integer pageNum, Integer pageSize) {
-        return findPage(pageNum, pageSize, "");
-    }
+//    public Page<Book> findPage(Integer pageNum, Integer pageSize) {
+//        return findPage(pageNum, pageSize, "");
+//    }
 
     public String getbookContent(Long bookId, int pageNum) throws IOException {
        // String filePath="E:/1.txt";
