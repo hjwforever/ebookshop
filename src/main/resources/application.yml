@@ -1,6 +1,7 @@
 server:
   tomcat:
     max-connections: 200
+    uri-encoding: utf-8
   port: ${port:8081}
 
 ebookshop:
@@ -70,7 +71,7 @@ spring:
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
-    initialization-mode: always
+    initialization-mode: never
 # Alibaba Druid connector pool
     druid:
       initial-size: 10
