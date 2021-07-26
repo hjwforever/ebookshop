@@ -18,7 +18,7 @@
 # E-Book Shop
 > E-BookShop Project for Spring Boot with Spring Security, Alibaba Druid,  Thymeleaf, MySQL, Springdoc
 
-go to [Microservices Backend Project](https://github.com/hjwforever/ebookshop-micro)  
+go to [Microservices Backend Project](https://github.com/hjwforever/ebookshop-microservice)  
 
 go to [Backend Project](https://github.com/hjwforever/E-BookShop)
 
