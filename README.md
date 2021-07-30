@@ -18,9 +18,9 @@
 # E-Book Shop
 > E-BookShop Project for Spring Boot with Spring Security, Alibaba Druid,  Thymeleaf, MySQL, Springdoc
 
-go to [Microservices Backend Project](https://github.com/hjwforever/ebookshop-microservice)  
-
-go to [Backend Project](https://github.com/hjwforever/E-BookShop)
+- [E-book Shop Client with Vue2](https://github.com/hjwforever/ebookshop-vue)
+- [E-book Shop Server with SpringBoot](https://github.com/hjwforever/ebookshop)
+- [E-book Shop Server with SpringBoot MicroServices](https://github.com/hjwforever/ebookshop-microservice)
 
 ## Project Structure
 ```bash
